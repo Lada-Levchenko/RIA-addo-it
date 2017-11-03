@@ -1,0 +1,6 @@
+# Created by .ignore support plugin (hsz.mobi)
+
+.idea/
+env/
+testdb
+generateDS-2.28.2/
