@@ -4,8 +4,10 @@ from utils.codes import *
 database = PostgresqlDatabase('ria', **{'user': 'postgres'})
 
 
-class UnknownField(object):
-    def __init__(self, *_, **__): pass
+answer_yes_no = {
+    ("Y", "Y"),
+    ("N", "N")
+}
 
 
 class BaseModel(Model):
@@ -31,7 +33,7 @@ class Indvl(BaseModel):
 class CrntEmp(BaseModel):
     indvl = ForeignKeyField(Indvl, related_name='crnt_emps')
     org_nm = CharField(max_length=64)
-    org_pk = IntegerField()       # Int10!!
+    org_pk = IntegerField()
     city = CharField(null=True, max_length=50)
     cntry = CharField(null=True, max_length=50)
     postl_cd = CharField(null=True, max_length=11)
@@ -57,7 +59,6 @@ class BrnchOfLoc(BaseModel):
         db_table = 'brnchofloc'
 
 
-# complete
 class CrntRgstn(BaseModel):
     crnt_emp = ForeignKeyField(CrntEmp, related_name='crnt_rgstns')
     reg_auth = CharField(choices=state_code)
@@ -69,24 +70,22 @@ class CrntRgstn(BaseModel):
         db_table = 'crntrgstn'
 
 
-# complete
 class DRP(BaseModel):
     indvl = ForeignKeyField(Indvl, related_name='drps')
-    has_reg_action = BooleanField(null=True)
-    has_criminal = BooleanField(null=True)
-    has_bankrupt = BooleanField(null=True)
-    has_civil_judc = BooleanField(null=True)
-    has_bond = BooleanField(null=True)
-    has_judgment = BooleanField(null=True)
-    has_invstgn = BooleanField(null=True)
-    has_cust_comp = BooleanField(null=True)
-    has_termination = BooleanField(null=True)
+    has_reg_action = CharField(null=True, choices=answer_yes_no)
+    has_criminal = CharField(null=True, choices=answer_yes_no)
+    has_bankrupt = CharField(null=True, choices=answer_yes_no)
+    has_civil_judc = CharField(null=True, choices=answer_yes_no)
+    has_bond = CharField(null=True, choices=answer_yes_no)
+    has_judgment = CharField(null=True, choices=answer_yes_no)
+    has_invstgn = CharField(null=True, choices=answer_yes_no)
+    has_cust_comp = CharField(null=True, choices=answer_yes_no)
+    has_termination = CharField(null=True, choices=answer_yes_no)
 
     class Meta:
         db_table = 'drp'
 
 
-# complete
 class Dsgntn(BaseModel):
     indvl = ForeignKeyField(Indvl, related_name='dsgntns')
     dsgntn_nm = CharField(max_length=128)
@@ -119,8 +118,8 @@ class Exm(BaseModel):
 
 class Info(BaseModel):
     indvl = ForeignKeyField(Indvl, related_name='info')
-    actv_ag_reg = BooleanField()
-    indvlp_k = IntegerField()       # Int10!!
+    actv_ag_reg = CharField(null=True, choices=answer_yes_no)
+    indvlp_k = IntegerField()
     link = CharField(null=True, max_length=128)
     first_nm = CharField(null=True, max_length=25)
     last_nm = CharField(null=True, max_length=25)
@@ -155,7 +154,7 @@ class PrevRgstn(BaseModel):
     indvl = ForeignKeyField(Indvl, related_name='prev_rgstns')
     iapd_report = ForeignKeyField(IAPDReport, related_name='prev_rgstns')
     org_nm = CharField(max_length=64)
-    org_pk = IntegerField()       # Int10!!
+    org_pk = IntegerField()
     reg_begin_dt = DateTimeField(null=True)
     reg_end_dt = DateTimeField(null=True)
 
