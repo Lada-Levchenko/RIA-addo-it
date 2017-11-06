@@ -1,0 +1,87 @@
+from peewee import *
+
+database = PostgresqlDatabase('ria', **{'user': 'postgres'})
+
+class UnknownField(object):
+    def __init__(self, *_, **__): pass
+
+class BaseModel(Model):
+    class Meta:
+        database = database
+
+class Sample2(BaseModel):
+    genon = DateTimeField(null=True)
+    indvl_crntemps_crntemp_brnchoflocs_brnchofloc_original_tagname = CharField(null=True)
+    indvl_crntemps_crntemp_crntrgstns_crntrgstn_original_tagname = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_brnchoflocs_brnchofloc_city = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_brnchoflocs_brnchofloc_cntry = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_brnchoflocs_brnchofloc_postlcd = IntegerField(null=True)
+    indvls_indvl_crntemps_crntemp_brnchoflocs_brnchofloc_state = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_brnchoflocs_brnchofloc_str1 = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_brnchoflocs_brnchofloc_str2 = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_brnchoflocs_original_tagname = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_city = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_cntry = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_crntrgstns_crntrgstn_regauth = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_crntrgstns_crntrgstn_regcat = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_crntrgstns_crntrgstn_st = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_crntrgstns_crntrgstn_stdt = DateTimeField(null=True)
+    indvls_indvl_crntemps_crntemp_crntrgstns_original_tagname = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_orgnm = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_orgpk = IntegerField(null=True)
+    indvls_indvl_crntemps_crntemp_original_tagname = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_postlcd = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_state = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_str1 = CharField(null=True)
+    indvls_indvl_crntemps_crntemp_str2 = CharField(null=True)
+    indvls_indvl_crntemps_original_tagname = CharField(null=True)
+    indvls_indvl_drps_original_tagname = CharField(null=True)
+    indvls_indvl_dsgntns_original_tagname = CharField(null=True)
+    indvls_indvl_emphss_emphs_city = CharField(null=True)
+    indvls_indvl_emphss_emphs_fromdt = CharField(null=True)
+    indvls_indvl_emphss_emphs_orgnm = CharField(null=True)
+    indvls_indvl_emphss_emphs_original_tagname = CharField(null=True)
+    indvls_indvl_emphss_emphs_state = CharField(null=True)
+    indvls_indvl_emphss_emphs_todt = CharField(null=True)
+    indvls_indvl_emphss_original_tagname = CharField(null=True)
+    indvls_indvl_exms_exm_exmcd = CharField(null=True)
+    indvls_indvl_exms_exm_exmdt = DateTimeField(null=True)
+    indvls_indvl_exms_exm_exmnm = CharField(null=True)
+    indvls_indvl_exms_exm_original_tagname = CharField(null=True)
+    indvls_indvl_exms_original_tagname = CharField(null=True)
+    indvls_indvl_info_actvagreg = CharField(null=True)
+    indvls_indvl_info_firstnm = CharField(null=True)
+    indvls_indvl_info_indvlpk = IntegerField(null=True)
+    indvls_indvl_info_lastnm = CharField(null=True)
+    indvls_indvl_info_link = CharField(null=True)
+    indvls_indvl_info_midnm = CharField(null=True)
+    indvls_indvl_info_original_tagname = CharField(null=True)
+    indvls_indvl_info_sufnm = CharField(null=True)
+    indvls_indvl_original_tagname = CharField(null=True)
+    indvls_indvl_othrbuss_original_tagname = CharField(null=True)
+    indvls_indvl_othrbuss_othrbus = CharField(null=True)
+    indvls_indvl_othrbuss_othrbus_desc = CharField(null=True)
+    indvls_indvl_othrbuss_othrbus_original_tagname = CharField(null=True)
+    indvls_indvl_othrnms_original_tagname = CharField(null=True)
+    indvls_indvl_othrnms_othrnm_firstnm = CharField(null=True)
+    indvls_indvl_othrnms_othrnm_lastnm = CharField(null=True)
+    indvls_indvl_othrnms_othrnm_midnm = CharField(null=True)
+    indvls_indvl_othrnms_othrnm_original_tagname = CharField(null=True)
+    indvls_indvl_othrnms_othrnm_sufnm = CharField(null=True)
+    indvls_indvl_prevrgstns_original_tagname = CharField(null=True)
+    indvls_indvl_prevrgstns_prevrgstn_brnchoflocs_brnchofloc_city = CharField(null=True)
+    indvls_indvl_prevrgstns_prevrgstn_brnchoflocs_brnchofloc_state = CharField(null=True)
+    indvls_indvl_prevrgstns_prevrgstn_brnchoflocs_original_tagname = CharField(null=True)
+    indvls_indvl_prevrgstns_prevrgstn_orgnm = CharField(null=True)
+    indvls_indvl_prevrgstns_prevrgstn_orgpk = IntegerField(null=True)
+    indvls_indvl_prevrgstns_prevrgstn_original_tagname = CharField(null=True)
+    indvls_indvl_prevrgstns_prevrgstn_regbegindt = DateTimeField(null=True)
+    indvls_indvl_prevrgstns_prevrgstn_regenddt = DateTimeField(null=True)
+    indvls_original_tagname = CharField(null=True)
+    original_tagname = CharField(null=True)
+    prevrgstns_prevrgstn_brnchoflocs_brnchofloc_original_tagname = CharField(null=True)
+
+    class Meta:
+        db_table = 'sample2'
+        primary_key = False
+
