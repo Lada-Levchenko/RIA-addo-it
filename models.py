@@ -1,8 +1,9 @@
 from peewee import *
 from utils.codes import *
 
-database = PostgresqlDatabase('ria', **{'user': 'postgres'})
 
+# database = PostgresqlDatabase('ria', **{'user': 'postgres'})
+database = SqliteDatabase('ria')
 
 answer_yes_no = {
     ("Y", "Y"),
@@ -32,8 +33,8 @@ class Indvl(BaseModel):
 
 class CrntEmp(BaseModel):
     indvl = ForeignKeyField(Indvl, related_name='crnt_emps')
-    org_nm = CharField(max_length=64)
-    org_pk = IntegerField()
+    org_nm = CharField(null=True, max_length=64)    # shouldn't be null!!
+    org_pk = IntegerField(null=True)    # shouldn't be null!!
     city = CharField(null=True, max_length=50)
     cntry = CharField(null=True, max_length=50)
     postl_cd = CharField(null=True, max_length=11)
@@ -45,9 +46,21 @@ class CrntEmp(BaseModel):
         db_table = 'crntemp'
 
 
+class PrevRgstn(BaseModel):
+    indvl = ForeignKeyField(Indvl, related_name='prev_rgstns', null=True)
+    iapd_report = ForeignKeyField(IAPDReport, related_name='prev_rgstns', null=True)
+    org_nm = CharField(null=True, max_length=64)    # shouldn't be null!!
+    org_pk = IntegerField(null=True)    # shouldn't be null!!
+    reg_begin_dt = DateTimeField(null=True)
+    reg_end_dt = DateTimeField(null=True)
+
+    class Meta:
+        db_table = 'prevrgstn'
+
+
 class BrnchOfLoc(BaseModel):
-    crnt_emp = ForeignKeyField(CrntEmp, related_name='brnch_of_locs')
-    prev_rgstns = ForeignKeyField(PrevRgstn, related_name='brnch_of_locs')
+    crnt_emp = ForeignKeyField(CrntEmp, related_name='brnch_of_locs', null=True)
+    prev_rgstn = ForeignKeyField(PrevRgstn, related_name='brnch_of_locs', null=True)
     city = CharField(null=True, max_length=50)
     cntry = CharField(null=True, max_length=50)
     postl_cd = CharField(null=True, max_length=11)
@@ -59,12 +72,22 @@ class BrnchOfLoc(BaseModel):
         db_table = 'brnchofloc'
 
 
+class PrevBrnchOfLoc(BaseModel):
+    crnt_emp = ForeignKeyField(CrntEmp, related_name='prev_brnch_of_locs', null=True)
+    prev_rgstn = ForeignKeyField(PrevRgstn, related_name='prev_brnch_of_locs', null=True)
+    city = CharField(null=True, max_length=50)
+    state = CharField(null=True, choices=state_code)
+
+    class Meta:
+        db_table = 'prevbrnchofloc'
+
+
 class CrntRgstn(BaseModel):
     crnt_emp = ForeignKeyField(CrntEmp, related_name='crnt_rgstns')
-    reg_auth = CharField(choices=state_code)
-    reg_cat = CharField(choices=registration_category)
-    st = CharField(choices=registration_status)
-    st_dt = DateTimeField()
+    reg_auth = CharField(null=True, choices=state_code)    # shouldn't be null!!
+    reg_cat = CharField(null=True, choices=registration_category)    # shouldn't be null!!
+    st = CharField(null=True, choices=registration_status)    # shouldn't be null!!
+    st_dt = DateTimeField(null=True)    # shouldn't be null!!
 
     class Meta:
         db_table = 'crntrgstn'
@@ -96,10 +119,10 @@ class Dsgntn(BaseModel):
 
 class EmpHist(BaseModel):
     indvl = ForeignKeyField(Indvl, related_name='emp_hss')
-    from_dt = CharField(max_length=7)
-    to_dt = CharField(max_length=7)
-    org_nm = CharField(max_length=64)
-    city = CharField(max_length=50)
+    from_dt = CharField(null=True, max_length=7)    # shouldn't be null!!
+    to_dt = CharField(null=True, max_length=7)    # shouldn't be null!!
+    org_nm = CharField(null=True, max_length=64)    # shouldn't be null!!
+    city = CharField(null=True, max_length=50)    # shouldn't be null!!
     state = CharField(null=True, choices=state_code)
 
     class Meta:
@@ -108,9 +131,9 @@ class EmpHist(BaseModel):
 
 class Exm(BaseModel):
     indvl = ForeignKeyField(Indvl, related_name='exms')
-    exm_cd = CharField(choices=exam_code)
+    exm_cd = CharField(null=True, choices=exam_code)    # shouldn't be null!!
     exm_dt = DateTimeField(null=True)
-    exm_nm = CharField(max_length=128)
+    exm_nm = CharField(null=True, max_length=128)    # shouldn't be null!!
 
     class Meta:
         db_table = 'exm'
@@ -119,7 +142,7 @@ class Exm(BaseModel):
 class Info(BaseModel):
     indvl = ForeignKeyField(Indvl, related_name='info')
     actv_ag_reg = CharField(null=True, choices=answer_yes_no)
-    indvlp_k = IntegerField()
+    indvl_pk = IntegerField()
     link = CharField(null=True, max_length=128)
     first_nm = CharField(null=True, max_length=25)
     last_nm = CharField(null=True, max_length=25)
@@ -130,7 +153,6 @@ class Info(BaseModel):
         db_table = 'info'
 
 
-# complete
 class OthrBus(BaseModel):
     indvl = ForeignKeyField(Indvl, related_name='othr_buss')
     desc = CharField(max_length=4000)
@@ -150,13 +172,6 @@ class OthrNm(BaseModel):
         db_table = 'othrnm'
 
 
-class PrevRgstn(BaseModel):
-    indvl = ForeignKeyField(Indvl, related_name='prev_rgstns')
-    iapd_report = ForeignKeyField(IAPDReport, related_name='prev_rgstns')
-    org_nm = CharField(max_length=64)
-    org_pk = IntegerField()
-    reg_begin_dt = DateTimeField(null=True)
-    reg_end_dt = DateTimeField(null=True)
-
-    class Meta:
-        db_table = 'prevrgstn'
+def init_db():
+    database.create_tables([IAPDReport, Indvl, CrntEmp, PrevRgstn, BrnchOfLoc, CrntRgstn,
+                           DRP, Dsgntn, EmpHist, Exm, Info, OthrBus, OthrNm, PrevBrnchOfLoc])

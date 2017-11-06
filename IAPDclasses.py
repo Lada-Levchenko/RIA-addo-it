@@ -25,6 +25,14 @@ import re as re_
 import base64
 import datetime as datetime_
 import warnings as warnings_
+from models import *
+
+
+def save_obj_to_db(obj, model):
+    if BaseModel in model.__bases__:
+        return model.create(**(obj.__dict__))
+
+
 try:
     from lxml import etree as etree_
 except ImportError:
@@ -709,14 +717,13 @@ class IAPDIndividualReportType(GeneratedsSuper):
     """This node contains the report generated date information."""
     subclass = None
     superclass = None
-    def __init__(self, GenOn=None, Indvls=None):
-        self.original_tagname_ = None
-        if isinstance(GenOn, BaseStrType_):
-            initvalue_ = datetime_.datetime.strptime(GenOn, '%Y-%m-%d').date()
+    def __init__(self, gen_on=None, Indvls=None):
+        if isinstance(gen_on, BaseStrType_):
+            initvalue_ = datetime_.datetime.strptime(gen_on, '%Y-%m-%d').date()
         else:
-            initvalue_ = GenOn
-        self.GenOn = initvalue_
-        self.Indvls = Indvls
+            initvalue_ = gen_on
+        self.gen_on = initvalue_
+        self.indvls = Indvls
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -728,13 +735,13 @@ class IAPDIndividualReportType(GeneratedsSuper):
         else:
             return IAPDIndividualReportType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_Indvls(self): return self.Indvls
-    def set_Indvls(self, Indvls): self.Indvls = Indvls
-    def get_GenOn(self): return self.GenOn
-    def set_GenOn(self, GenOn): self.GenOn = GenOn
+    def get_Indvls(self): return self.indvls
+    def set_Indvls(self, Indvls): self.indvls = Indvls
+    def get_GenOn(self): return self.gen_on
+    def set_GenOn(self, GenOn): self.gen_on = GenOn
     def hasContent_(self):
         if (
-            self.Indvls is not None
+            self.indvls is not None
         ):
             return True
         else:
@@ -761,37 +768,37 @@ class IAPDIndividualReportType(GeneratedsSuper):
         else:
             outfile.write('/>%s' % (eol_, ))
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='IAPDIndividualReportType'):
-        if self.GenOn is not None and 'GenOn' not in already_processed:
+        if self.gen_on is not None and 'GenOn' not in already_processed:
             already_processed.add('GenOn')
-            outfile.write(' GenOn="%s"' % self.gds_format_date(self.GenOn, input_name='GenOn'))
+            outfile.write(' GenOn="%s"' % self.gds_format_date(self.gen_on, input_name='GenOn'))
     def exportChildren(self, outfile, level, namespace_='', name_='IAPDIndividualReportType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.Indvls is not None:
-            self.Indvls.export(outfile, level, namespace_, name_='Indvls', pretty_print=pretty_print)
-    def build(self, node):
+        if self.indvls is not None:
+            self.indvls.export(outfile, level, namespace_, name_='Indvls', pretty_print=pretty_print)
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
+        db_obj = save_obj_to_db(self, IAPDReport)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         value = find_attr_value_('GenOn', node)
         if value is not None and 'GenOn' not in already_processed:
             already_processed.add('GenOn')
             try:
-                self.GenOn = self.gds_parse_date(value)
+                self.gen_on = self.gds_parse_date(value)
             except ValueError as exp:
                 raise ValueError('Bad date attribute (GenOn): %s' % exp)
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'Indvls':
             obj_ = IndvlsType.factory()
-            obj_.build(child_)
-            self.Indvls = obj_
-            obj_.original_tagname_ = 'Indvls'
+            obj_.build(child_, parent)
+            self.indvls = obj_
 # end class IAPDIndividualReportType
 
 
@@ -801,11 +808,10 @@ class IndvlsType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, Indvl=None):
-        self.original_tagname_ = None
         if Indvl is None:
-            self.Indvl = []
+            self.indvl = []
         else:
-            self.Indvl = Indvl
+            self.indvl = Indvl
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -817,14 +823,14 @@ class IndvlsType(GeneratedsSuper):
         else:
             return IndvlsType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_Indvl(self): return self.Indvl
-    def set_Indvl(self, Indvl): self.Indvl = Indvl
-    def add_Indvl(self, value): self.Indvl.append(value)
-    def insert_Indvl_at(self, index, value): self.Indvl.insert(index, value)
-    def replace_Indvl_at(self, index, value): self.Indvl[index] = value
+    def get_Indvl(self): return self.indvl
+    def set_Indvl(self, Indvl): self.indvl = Indvl
+    def add_Indvl(self, value): self.indvl.append(value)
+    def insert_Indvl_at(self, index, value): self.indvl.insert(index, value)
+    def replace_Indvl_at(self, index, value): self.indvl[index] = value
     def hasContent_(self):
         if (
-            self.Indvl
+            self.indvl
         ):
             return True
         else:
@@ -857,23 +863,22 @@ class IndvlsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        for Indvl_ in self.Indvl:
+        for Indvl_ in self.indvl:
             Indvl_.export(outfile, level, namespace_, name_='Indvl', pretty_print=pretty_print)
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'Indvl':
             obj_ = IndvlType.factory()
-            obj_.build(child_)
-            self.Indvl.append(obj_)
-            obj_.original_tagname_ = 'Indvl'
+            obj_.build(child_, parent)
+            self.indvl.append(obj_)
 # end class IndvlsType
 
 
@@ -884,16 +889,15 @@ class IndvlType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, Info=None, OthrNms=None, CrntEmps=None, Exms=None, Dsgntns=None, PrevRgstns=None, EmpHss=None, OthrBuss=None, DRPs=None):
-        self.original_tagname_ = None
-        self.Info = Info
-        self.OthrNms = OthrNms
-        self.CrntEmps = CrntEmps
-        self.Exms = Exms
-        self.Dsgntns = Dsgntns
-        self.PrevRgstns = PrevRgstns
-        self.EmpHss = EmpHss
-        self.OthrBuss = OthrBuss
-        self.DRPs = DRPs
+        self.info = Info
+        self.othr_nms = OthrNms
+        self.crnt_emps = CrntEmps
+        self.exms = Exms
+        self.dsgntns = Dsgntns
+        self.prev_rgstns = PrevRgstns
+        self.emp_hss = EmpHss
+        self.othr_buss = OthrBuss
+        self.drps = DRPs
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -905,35 +909,35 @@ class IndvlType(GeneratedsSuper):
         else:
             return IndvlType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_Info(self): return self.Info
-    def set_Info(self, Info): self.Info = Info
-    def get_OthrNms(self): return self.OthrNms
-    def set_OthrNms(self, OthrNms): self.OthrNms = OthrNms
-    def get_CrntEmps(self): return self.CrntEmps
-    def set_CrntEmps(self, CrntEmps): self.CrntEmps = CrntEmps
-    def get_Exms(self): return self.Exms
-    def set_Exms(self, Exms): self.Exms = Exms
-    def get_Dsgntns(self): return self.Dsgntns
-    def set_Dsgntns(self, Dsgntns): self.Dsgntns = Dsgntns
-    def get_PrevRgstns(self): return self.PrevRgstns
-    def set_PrevRgstns(self, PrevRgstns): self.PrevRgstns = PrevRgstns
-    def get_EmpHss(self): return self.EmpHss
-    def set_EmpHss(self, EmpHss): self.EmpHss = EmpHss
-    def get_OthrBuss(self): return self.OthrBuss
-    def set_OthrBuss(self, OthrBuss): self.OthrBuss = OthrBuss
-    def get_DRPs(self): return self.DRPs
-    def set_DRPs(self, DRPs): self.DRPs = DRPs
+    def get_Info(self): return self.info
+    def set_Info(self, Info): self.info = Info
+    def get_OthrNms(self): return self.othr_nms
+    def set_OthrNms(self, OthrNms): self.othr_nms = OthrNms
+    def get_CrntEmps(self): return self.crnt_emps
+    def set_CrntEmps(self, CrntEmps): self.crnt_emps = CrntEmps
+    def get_Exms(self): return self.exms
+    def set_Exms(self, Exms): self.exms = Exms
+    def get_Dsgntns(self): return self.dsgntns
+    def set_Dsgntns(self, Dsgntns): self.dsgntns = Dsgntns
+    def get_PrevRgstns(self): return self.prev_rgstns
+    def set_PrevRgstns(self, PrevRgstns): self.prev_rgstns = PrevRgstns
+    def get_EmpHss(self): return self.emp_hss
+    def set_EmpHss(self, EmpHss): self.emp_hss = EmpHss
+    def get_OthrBuss(self): return self.othr_buss
+    def set_OthrBuss(self, OthrBuss): self.othr_buss = OthrBuss
+    def get_DRPs(self): return self.drps
+    def set_DRPs(self, DRPs): self.drps = DRPs
     def hasContent_(self):
         if (
-            self.Info is not None or
-            self.OthrNms is not None or
-            self.CrntEmps is not None or
-            self.Exms is not None or
-            self.Dsgntns is not None or
-            self.PrevRgstns is not None or
-            self.EmpHss is not None or
-            self.OthrBuss is not None or
-            self.DRPs is not None
+            self.info is not None or
+            self.othr_nms is not None or
+            self.crnt_emps is not None or
+            self.exms is not None or
+            self.dsgntns is not None or
+            self.prev_rgstns is not None or
+            self.emp_hss is not None or
+            self.othr_buss is not None or
+            self.drps is not None
         ):
             return True
         else:
@@ -966,79 +970,73 @@ class IndvlType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.Info is not None:
-            self.Info.export(outfile, level, namespace_, name_='Info', pretty_print=pretty_print)
-        if self.OthrNms is not None:
-            self.OthrNms.export(outfile, level, namespace_, name_='OthrNms', pretty_print=pretty_print)
-        if self.CrntEmps is not None:
-            self.CrntEmps.export(outfile, level, namespace_, name_='CrntEmps', pretty_print=pretty_print)
-        if self.Exms is not None:
-            self.Exms.export(outfile, level, namespace_, name_='Exms', pretty_print=pretty_print)
-        if self.Dsgntns is not None:
-            self.Dsgntns.export(outfile, level, namespace_, name_='Dsgntns', pretty_print=pretty_print)
-        if self.PrevRgstns is not None:
-            self.PrevRgstns.export(outfile, level, namespace_, name_='PrevRgstns', pretty_print=pretty_print)
-        if self.EmpHss is not None:
-            self.EmpHss.export(outfile, level, namespace_, name_='EmpHss', pretty_print=pretty_print)
-        if self.OthrBuss is not None:
-            self.OthrBuss.export(outfile, level, namespace_, name_='OthrBuss', pretty_print=pretty_print)
-        if self.DRPs is not None:
-            self.DRPs.export(outfile, level, namespace_, name_='DRPs', pretty_print=pretty_print)
-    def build(self, node):
+        if self.info is not None:
+            self.info.export(outfile, level, namespace_, name_='Info', pretty_print=pretty_print)
+        if self.othr_nms is not None:
+            self.othr_nms.export(outfile, level, namespace_, name_='OthrNms', pretty_print=pretty_print)
+        if self.crnt_emps is not None:
+            self.crnt_emps.export(outfile, level, namespace_, name_='CrntEmps', pretty_print=pretty_print)
+        if self.exms is not None:
+            self.exms.export(outfile, level, namespace_, name_='Exms', pretty_print=pretty_print)
+        if self.dsgntns is not None:
+            self.dsgntns.export(outfile, level, namespace_, name_='Dsgntns', pretty_print=pretty_print)
+        if self.prev_rgstns is not None:
+            self.prev_rgstns.export(outfile, level, namespace_, name_='PrevRgstns', pretty_print=pretty_print)
+        if self.emp_hss is not None:
+            self.emp_hss.export(outfile, level, namespace_, name_='EmpHss', pretty_print=pretty_print)
+        if self.othr_buss is not None:
+            self.othr_buss.export(outfile, level, namespace_, name_='OthrBuss', pretty_print=pretty_print)
+        if self.drps is not None:
+            self.drps.export(outfile, level, namespace_, name_='DRPs', pretty_print=pretty_print)
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
+        if db_obj:
+            self.iapd_report_id = db_obj.id
+        db_obj = save_obj_to_db(self, Indvl)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'Info':
             obj_ = InfoType.factory()
-            obj_.build(child_)
-            self.Info = obj_
-            obj_.original_tagname_ = 'Info'
+            obj_.build(child_, parent)
+            self.info = obj_
         elif nodeName_ == 'OthrNms':
             obj_ = OthrNmsType.factory()
-            obj_.build(child_)
-            self.OthrNms = obj_
-            obj_.original_tagname_ = 'OthrNms'
+            obj_.build(child_, parent)
+            self.othr_nms = obj_
         elif nodeName_ == 'CrntEmps':
             obj_ = CrntEmpsType.factory()
-            obj_.build(child_)
-            self.CrntEmps = obj_
-            obj_.original_tagname_ = 'CrntEmps'
+            obj_.build(child_, parent)
+            self.crnt_emps = obj_
         elif nodeName_ == 'Exms':
             obj_ = ExmsType.factory()
-            obj_.build(child_)
-            self.Exms = obj_
-            obj_.original_tagname_ = 'Exms'
+            obj_.build(child_, parent)
+            self.exms = obj_
         elif nodeName_ == 'Dsgntns':
             obj_ = DsgntnsType.factory()
-            obj_.build(child_)
-            self.Dsgntns = obj_
-            obj_.original_tagname_ = 'Dsgntns'
+            obj_.build(child_, parent)
+            self.dsgntns = obj_
         elif nodeName_ == 'PrevRgstns':
             obj_ = PrevRgstnsType.factory()
-            obj_.build(child_)
-            self.PrevRgstns = obj_
-            obj_.original_tagname_ = 'PrevRgstns'
+            obj_.build(child_, parent)
+            self.prev_rgstns = obj_
         elif nodeName_ == 'EmpHss':
             obj_ = EmpHistsType.factory()
-            obj_.build(child_)
-            self.EmpHss = obj_
-            obj_.original_tagname_ = 'EmpHss'
+            obj_.build(child_, parent)
+            self.emp_hss = obj_
         elif nodeName_ == 'OthrBuss':
             obj_ = OthrBussType.factory()
-            obj_.build(child_)
-            self.OthrBuss = obj_
-            obj_.original_tagname_ = 'OthrBuss'
+            obj_.build(child_, parent)
+            self.othr_buss = obj_
         elif nodeName_ == 'DRPs':
             obj_ = DRPsType.factory()
-            obj_.build(child_)
-            self.DRPs = obj_
-            obj_.original_tagname_ = 'DRPs'
+            obj_.build(child_, parent)
+            self.drps = obj_
 # end class IndvlType
 
 
@@ -1050,14 +1048,13 @@ class InfoType(GeneratedsSuper):
     the individual’s composite in IAPD."""
     subclass = None
     superclass = None
-    def __init__(self, lastNm=None, firstNm=None, midNm=None, sufNm=None, indvlPK=None, actvAGReg=None, link=None):
-        self.original_tagname_ = None
-        self.lastNm = _cast(None, lastNm)
-        self.firstNm = _cast(None, firstNm)
-        self.midNm = _cast(None, midNm)
-        self.sufNm = _cast(None, sufNm)
-        self.indvlPK = _cast(None, indvlPK)
-        self.actvAGReg = _cast(None, actvAGReg)
+    def __init__(self, last_nm=None, first_nm=None, mid_nm=None, suf_nm=None, indvlPK=None, actvAGReg=None, link=None):
+        self.last_nm = _cast(None, last_nm)
+        self.first_nm = _cast(None, first_nm)
+        self.mid_nm = _cast(None, mid_nm)
+        self.suf_nm = _cast(None, suf_nm)
+        self.indvl_pk = _cast(None, indvlPK)
+        self.actv_ag_reg = _cast(None, actvAGReg)
         self.link = _cast(None, link)
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
@@ -1070,18 +1067,18 @@ class InfoType(GeneratedsSuper):
         else:
             return InfoType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_lastNm(self): return self.lastNm
-    def set_lastNm(self, lastNm): self.lastNm = lastNm
-    def get_firstNm(self): return self.firstNm
-    def set_firstNm(self, firstNm): self.firstNm = firstNm
-    def get_midNm(self): return self.midNm
-    def set_midNm(self, midNm): self.midNm = midNm
-    def get_sufNm(self): return self.sufNm
-    def set_sufNm(self, sufNm): self.sufNm = sufNm
-    def get_indvlPK(self): return self.indvlPK
-    def set_indvlPK(self, indvlPK): self.indvlPK = indvlPK
-    def get_actvAGReg(self): return self.actvAGReg
-    def set_actvAGReg(self, actvAGReg): self.actvAGReg = actvAGReg
+    def get_last_nm(self): return self.last_nm
+    def set_last_nm(self, last_nm): self.last_nm = last_nm
+    def get_first_nm(self): return self.first_nm
+    def set_first_nm(self, first_nm): self.first_nm = first_nm
+    def get_mid_nm(self): return self.mid_nm
+    def set_mid_nm(self, mid_nm): self.mid_nm = mid_nm
+    def get_suf_nm(self): return self.suf_nm
+    def set_suf_nm(self, suf_nm): self.suf_nm = suf_nm
+    def get_indvlPK(self): return self.indvl_pk
+    def set_indvlPK(self, indvlPK): self.indvl_pk = indvlPK
+    def get_actvAGReg(self): return self.actv_ag_reg
+    def set_actvAGReg(self, actvAGReg): self.actv_ag_reg = actvAGReg
     def get_link(self): return self.link
     def set_link(self, link): self.link = link
     def validate_Str25(self, value):
@@ -1149,76 +1146,79 @@ class InfoType(GeneratedsSuper):
         else:
             outfile.write('/>%s' % (eol_, ))
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='InfoType'):
-        if self.lastNm is not None and 'lastNm' not in already_processed:
-            already_processed.add('lastNm')
-            outfile.write(' lastNm=%s' % (quote_attrib(self.lastNm), ))
-        if self.firstNm is not None and 'firstNm' not in already_processed:
-            already_processed.add('firstNm')
-            outfile.write(' firstNm=%s' % (quote_attrib(self.firstNm), ))
-        if self.midNm is not None and 'midNm' not in already_processed:
-            already_processed.add('midNm')
-            outfile.write(' midNm=%s' % (quote_attrib(self.midNm), ))
-        if self.sufNm is not None and 'sufNm' not in already_processed:
-            already_processed.add('sufNm')
-            outfile.write(' sufNm=%s' % (quote_attrib(self.sufNm), ))
-        if self.indvlPK is not None and 'indvlPK' not in already_processed:
+        if self.last_nm is not None and 'last_nm' not in already_processed:
+            already_processed.add('last_nm')
+            outfile.write(' last_nm=%s' % (quote_attrib(self.last_nm),))
+        if self.first_nm is not None and 'first_nm' not in already_processed:
+            already_processed.add('first_nm')
+            outfile.write(' first_nm=%s' % (quote_attrib(self.first_nm),))
+        if self.mid_nm is not None and 'mid_nm' not in already_processed:
+            already_processed.add('mid_nm')
+            outfile.write(' mid_nm=%s' % (quote_attrib(self.mid_nm),))
+        if self.suf_nm is not None and 'suf_nm' not in already_processed:
+            already_processed.add('suf_nm')
+            outfile.write(' suf_nm=%s' % (quote_attrib(self.suf_nm),))
+        if self.indvl_pk is not None and 'indvlPK' not in already_processed:
             already_processed.add('indvlPK')
-            outfile.write(' indvlPK=%s' % (quote_attrib(self.indvlPK), ))
-        if self.actvAGReg is not None and 'actvAGReg' not in already_processed:
+            outfile.write(' indvlPK=%s' % (quote_attrib(self.indvl_pk),))
+        if self.actv_ag_reg is not None and 'actvAGReg' not in already_processed:
             already_processed.add('actvAGReg')
-            outfile.write(' actvAGReg=%s' % (quote_attrib(self.actvAGReg), ))
+            outfile.write(' actvAGReg=%s' % (quote_attrib(self.actv_ag_reg),))
         if self.link is not None and 'link' not in already_processed:
             already_processed.add('link')
             outfile.write(' link=%s' % (quote_attrib(self.link), ))
     def exportChildren(self, outfile, level, namespace_='', name_='InfoType', fromsubclass_=False, pretty_print=True):
         pass
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
+        if db_obj:
+            self.indvl_id = db_obj.id
+        db_obj = save_obj_to_db(self, Info)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('lastNm', node)
-        if value is not None and 'lastNm' not in already_processed:
-            already_processed.add('lastNm')
-            self.lastNm = value
-            self.validate_Str25(self.lastNm)    # validate type Str25
-        value = find_attr_value_('firstNm', node)
-        if value is not None and 'firstNm' not in already_processed:
-            already_processed.add('firstNm')
-            self.firstNm = value
-            self.validate_Str25(self.firstNm)    # validate type Str25
-        value = find_attr_value_('midNm', node)
-        if value is not None and 'midNm' not in already_processed:
-            already_processed.add('midNm')
-            self.midNm = value
-            self.validate_Str20(self.midNm)    # validate type Str20
-        value = find_attr_value_('sufNm', node)
-        if value is not None and 'sufNm' not in already_processed:
-            already_processed.add('sufNm')
-            self.sufNm = value
-            self.validate_Str5(self.sufNm)    # validate type Str5
+        value = find_attr_value_('last_nm', node)
+        if value is not None and 'last_nm' not in already_processed:
+            already_processed.add('last_nm')
+            self.last_nm = value
+            self.validate_Str25(self.last_nm)    # validate type Str25
+        value = find_attr_value_('first_nm', node)
+        if value is not None and 'first_nm' not in already_processed:
+            already_processed.add('first_nm')
+            self.first_nm = value
+            self.validate_Str25(self.first_nm)    # validate type Str25
+        value = find_attr_value_('mid_nm', node)
+        if value is not None and 'mid_nm' not in already_processed:
+            already_processed.add('mid_nm')
+            self.mid_nm = value
+            self.validate_Str20(self.mid_nm)    # validate type Str20
+        value = find_attr_value_('suf_nm', node)
+        if value is not None and 'suf_nm' not in already_processed:
+            already_processed.add('suf_nm')
+            self.suf_nm = value
+            self.validate_Str5(self.suf_nm)    # validate type Str5
         value = find_attr_value_('indvlPK', node)
         if value is not None and 'indvlPK' not in already_processed:
             already_processed.add('indvlPK')
             try:
-                self.indvlPK = int(value)
+                self.indvl_pk = int(value)
             except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
-            self.validate_Int10(self.indvlPK)    # validate type Int10
+            self.validate_Int10(self.indvl_pk)    # validate type Int10
         value = find_attr_value_('actvAGReg', node)
         if value is not None and 'actvAGReg' not in already_processed:
             already_processed.add('actvAGReg')
-            self.actvAGReg = value
-            self.validate_answerYNType(self.actvAGReg)    # validate type answerYNType
+            self.actv_ag_reg = value
+            self.validate_answerYNType(self.actv_ag_reg)    # validate type answerYNType
         value = find_attr_value_('link', node)
         if value is not None and 'link' not in already_processed:
             already_processed.add('link')
             self.link = value
             self.validate_Str128(self.link)    # validate type Str128
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         pass
 # end class InfoType
 
@@ -1232,11 +1232,10 @@ class OthrNmsType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, OthrNm=None):
-        self.original_tagname_ = None
         if OthrNm is None:
-            self.OthrNm = []
+            self.othr_nm = []
         else:
-            self.OthrNm = OthrNm
+            self.othr_nm = OthrNm
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -1248,14 +1247,14 @@ class OthrNmsType(GeneratedsSuper):
         else:
             return OthrNmsType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_OthrNm(self): return self.OthrNm
-    def set_OthrNm(self, OthrNm): self.OthrNm = OthrNm
-    def add_OthrNm(self, value): self.OthrNm.append(value)
-    def insert_OthrNm_at(self, index, value): self.OthrNm.insert(index, value)
-    def replace_OthrNm_at(self, index, value): self.OthrNm[index] = value
+    def get_OthrNm(self): return self.othr_nm
+    def set_OthrNm(self, OthrNm): self.othr_nm = OthrNm
+    def add_OthrNm(self, value): self.othr_nm.append(value)
+    def insert_OthrNm_at(self, index, value): self.othr_nm.insert(index, value)
+    def replace_OthrNm_at(self, index, value): self.othr_nm[index] = value
     def hasContent_(self):
         if (
-            self.OthrNm
+            self.othr_nm
         ):
             return True
         else:
@@ -1288,23 +1287,22 @@ class OthrNmsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        for OthrNm_ in self.OthrNm:
+        for OthrNm_ in self.othr_nm:
             OthrNm_.export(outfile, level, namespace_, name_='OthrNm', pretty_print=pretty_print)
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'OthrNm':
             obj_ = OthrNmType.factory()
-            obj_.build(child_)
-            self.OthrNm.append(obj_)
-            obj_.original_tagname_ = 'OthrNm'
+            obj_.build(child_, parent)
+            self.othr_nm.append(obj_)
 # end class OthrNmsType
 
 
@@ -1314,12 +1312,11 @@ class OthrNmType(GeneratedsSuper):
     Suffix Name of Other name"""
     subclass = None
     superclass = None
-    def __init__(self, lastNm=None, firstNm=None, midNm=None, sufNm=None):
-        self.original_tagname_ = None
-        self.lastNm = _cast(None, lastNm)
-        self.firstNm = _cast(None, firstNm)
-        self.midNm = _cast(None, midNm)
-        self.sufNm = _cast(None, sufNm)
+    def __init__(self, last_nm=None, first_nm=None, mid_nm=None, suf_nm=None):
+        self.last_nm = _cast(None, last_nm)
+        self.first_nm = _cast(None, first_nm)
+        self.mid_nm = _cast(None, mid_nm)
+        self.suf_nm = _cast(None, suf_nm)
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -1331,14 +1328,14 @@ class OthrNmType(GeneratedsSuper):
         else:
             return OthrNmType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_lastNm(self): return self.lastNm
-    def set_lastNm(self, lastNm): self.lastNm = lastNm
-    def get_firstNm(self): return self.firstNm
-    def set_firstNm(self, firstNm): self.firstNm = firstNm
-    def get_midNm(self): return self.midNm
-    def set_midNm(self, midNm): self.midNm = midNm
-    def get_sufNm(self): return self.sufNm
-    def set_sufNm(self, sufNm): self.sufNm = sufNm
+    def get_last_nm(self): return self.last_nm
+    def set_last_nm(self, last_nm): self.last_nm = last_nm
+    def get_first_nm(self): return self.first_nm
+    def set_first_nm(self, first_nm): self.first_nm = first_nm
+    def get_mid_nm(self): return self.mid_nm
+    def set_mid_nm(self, mid_nm): self.mid_nm = mid_nm
+    def get_suf_nm(self): return self.suf_nm
+    def set_suf_nm(self, suf_nm): self.suf_nm = suf_nm
     def validate_Str25(self, value):
         # Validate type Str25, a restriction on xsd:string.
         if value is not None and Validate_simpletypes_:
@@ -1382,49 +1379,52 @@ class OthrNmType(GeneratedsSuper):
         else:
             outfile.write('/>%s' % (eol_, ))
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='OthrNmType'):
-        if self.lastNm is not None and 'lastNm' not in already_processed:
-            already_processed.add('lastNm')
-            outfile.write(' lastNm=%s' % (quote_attrib(self.lastNm), ))
-        if self.firstNm is not None and 'firstNm' not in already_processed:
-            already_processed.add('firstNm')
-            outfile.write(' firstNm=%s' % (quote_attrib(self.firstNm), ))
-        if self.midNm is not None and 'midNm' not in already_processed:
-            already_processed.add('midNm')
-            outfile.write(' midNm=%s' % (quote_attrib(self.midNm), ))
-        if self.sufNm is not None and 'sufNm' not in already_processed:
-            already_processed.add('sufNm')
-            outfile.write(' sufNm=%s' % (quote_attrib(self.sufNm), ))
+        if self.last_nm is not None and 'last_nm' not in already_processed:
+            already_processed.add('last_nm')
+            outfile.write(' last_nm=%s' % (quote_attrib(self.last_nm), ))
+        if self.first_nm is not None and 'first_nm' not in already_processed:
+            already_processed.add('first_nm')
+            outfile.write(' first_nm=%s' % (quote_attrib(self.first_nm), ))
+        if self.mid_nm is not None and 'mid_nm' not in already_processed:
+            already_processed.add('mid_nm')
+            outfile.write(' mid_nm=%s' % (quote_attrib(self.mid_nm), ))
+        if self.suf_nm is not None and 'suf_nm' not in already_processed:
+            already_processed.add('suf_nm')
+            outfile.write(' suf_nm=%s' % (quote_attrib(self.suf_nm), ))
     def exportChildren(self, outfile, level, namespace_='', name_='OthrNmType', fromsubclass_=False, pretty_print=True):
         pass
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
+        if db_obj:
+            self.indvl_id = db_obj.id
+        db_obj = save_obj_to_db(self, OthrNm)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('lastNm', node)
-        if value is not None and 'lastNm' not in already_processed:
-            already_processed.add('lastNm')
-            self.lastNm = value
-            self.validate_Str25(self.lastNm)    # validate type Str25
-        value = find_attr_value_('firstNm', node)
-        if value is not None and 'firstNm' not in already_processed:
-            already_processed.add('firstNm')
-            self.firstNm = value
-            self.validate_Str25(self.firstNm)    # validate type Str25
-        value = find_attr_value_('midNm', node)
-        if value is not None and 'midNm' not in already_processed:
-            already_processed.add('midNm')
-            self.midNm = value
-            self.validate_Str20(self.midNm)    # validate type Str20
-        value = find_attr_value_('sufNm', node)
-        if value is not None and 'sufNm' not in already_processed:
-            already_processed.add('sufNm')
-            self.sufNm = value
-            self.validate_Str5(self.sufNm)    # validate type Str5
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+        value = find_attr_value_('last_nm', node)
+        if value is not None and 'last_nm' not in already_processed:
+            already_processed.add('last_nm')
+            self.last_nm = value
+            self.validate_Str25(self.last_nm)    # validate type Str25
+        value = find_attr_value_('first_nm', node)
+        if value is not None and 'first_nm' not in already_processed:
+            already_processed.add('first_nm')
+            self.first_nm = value
+            self.validate_Str25(self.first_nm)    # validate type Str25
+        value = find_attr_value_('mid_nm', node)
+        if value is not None and 'mid_nm' not in already_processed:
+            already_processed.add('mid_nm')
+            self.mid_nm = value
+            self.validate_Str20(self.mid_nm)    # validate type Str20
+        value = find_attr_value_('suf_nm', node)
+        if value is not None and 'suf_nm' not in already_processed:
+            already_processed.add('suf_nm')
+            self.suf_nm = value
+            self.validate_Str5(self.suf_nm)    # validate type Str5
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         pass
 # end class OthrNmType
 
@@ -1435,11 +1435,10 @@ class CrntEmpsType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, CrntEmp=None):
-        self.original_tagname_ = None
         if CrntEmp is None:
-            self.CrntEmp = []
+            self.crnt_emp = []
         else:
-            self.CrntEmp = CrntEmp
+            self.crnt_emp = CrntEmp
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -1451,14 +1450,14 @@ class CrntEmpsType(GeneratedsSuper):
         else:
             return CrntEmpsType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_CrntEmp(self): return self.CrntEmp
-    def set_CrntEmp(self, CrntEmp): self.CrntEmp = CrntEmp
-    def add_CrntEmp(self, value): self.CrntEmp.append(value)
-    def insert_CrntEmp_at(self, index, value): self.CrntEmp.insert(index, value)
-    def replace_CrntEmp_at(self, index, value): self.CrntEmp[index] = value
+    def get_CrntEmp(self): return self.crnt_emp
+    def set_CrntEmp(self, CrntEmp): self.crnt_emp = CrntEmp
+    def add_CrntEmp(self, value): self.crnt_emp.append(value)
+    def insert_CrntEmp_at(self, index, value): self.crnt_emp.insert(index, value)
+    def replace_CrntEmp_at(self, index, value): self.crnt_emp[index] = value
     def hasContent_(self):
         if (
-            self.CrntEmp
+            self.crnt_emp
         ):
             return True
         else:
@@ -1491,23 +1490,22 @@ class CrntEmpsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        for CrntEmp_ in self.CrntEmp:
+        for CrntEmp_ in self.crnt_emp:
             CrntEmp_.export(outfile, level, namespace_, name_='CrntEmp', pretty_print=pretty_print)
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'CrntEmp':
             obj_ = CrntEmpType.factory()
-            obj_.build(child_)
-            self.CrntEmp.append(obj_)
-            obj_.original_tagname_ = 'CrntEmp'
+            obj_.build(child_, parent)
+            self.crnt_emp.append(obj_)
 # end class CrntEmpsType
 
 
@@ -1520,18 +1518,17 @@ class CrntEmpType(GeneratedsSuper):
     Country This node has the firm's address - Postal Code"""
     subclass = None
     superclass = None
-    def __init__(self, orgNm=None, orgPK=None, str1=None, str2=None, city=None, state=None, cntry=None, postlCd=None, CrntRgstns=None, BrnchOfLocs=None):
-        self.original_tagname_ = None
-        self.orgNm = _cast(None, orgNm)
-        self.orgPK = _cast(None, orgPK)
+    def __init__(self, org_nm=None, org_pk=None, str1=None, str2=None, city=None, state=None, cntry=None, postl_cd=None, CrntRgstns=None, BrnchOfLocs=None):
+        self.org_nm = _cast(None, org_nm)
+        self.org_pk = _cast(None, org_pk)
         self.str1 = _cast(None, str1)
         self.str2 = _cast(None, str2)
         self.city = _cast(None, city)
         self.state = _cast(None, state)
         self.cntry = _cast(None, cntry)
-        self.postlCd = _cast(None, postlCd)
-        self.CrntRgstns = CrntRgstns
-        self.BrnchOfLocs = BrnchOfLocs
+        self.postl_cd = _cast(None, postl_cd)
+        self.crnt_rgstns = CrntRgstns
+        self.brnch_of_locs = BrnchOfLocs
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -1543,14 +1540,14 @@ class CrntEmpType(GeneratedsSuper):
         else:
             return CrntEmpType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_CrntRgstns(self): return self.CrntRgstns
-    def set_CrntRgstns(self, CrntRgstns): self.CrntRgstns = CrntRgstns
-    def get_BrnchOfLocs(self): return self.BrnchOfLocs
-    def set_BrnchOfLocs(self, BrnchOfLocs): self.BrnchOfLocs = BrnchOfLocs
-    def get_orgNm(self): return self.orgNm
-    def set_orgNm(self, orgNm): self.orgNm = orgNm
-    def get_orgPK(self): return self.orgPK
-    def set_orgPK(self, orgPK): self.orgPK = orgPK
+    def get_CrntRgstns(self): return self.crnt_rgstns
+    def set_CrntRgstns(self, CrntRgstns): self.crnt_rgstns = CrntRgstns
+    def get_BrnchOfLocs(self): return self.brnch_of_locs
+    def set_BrnchOfLocs(self, BrnchOfLocs): self.brnch_of_locs = BrnchOfLocs
+    def get_org_nm(self): return self.org_nm
+    def set_org_nm(self, org_nm): self.org_nm = org_nm
+    def get_org_pk(self): return self.org_pk
+    def set_org_pk(self, org_pk): self.org_pk = org_pk
     def get_str1(self): return self.str1
     def set_str1(self, str1): self.str1 = str1
     def get_str2(self): return self.str2
@@ -1561,8 +1558,8 @@ class CrntEmpType(GeneratedsSuper):
     def set_state(self, state): self.state = state
     def get_cntry(self): return self.cntry
     def set_cntry(self, cntry): self.cntry = cntry
-    def get_postlCd(self): return self.postlCd
-    def set_postlCd(self, postlCd): self.postlCd = postlCd
+    def get_postl_cd(self): return self.postl_cd
+    def set_postl_cd(self, postl_cd): self.postl_cd = postl_cd
     def validate_Str64(self, value):
         # Validate type Str64, a restriction on xsd:string.
         if value is not None and Validate_simpletypes_:
@@ -1599,8 +1596,8 @@ class CrntEmpType(GeneratedsSuper):
                 warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on Str11' % {"value" : value.encode("utf-8")} )
     def hasContent_(self):
         if (
-            self.CrntRgstns is not None or
-            self.BrnchOfLocs is not None
+            self.crnt_rgstns is not None or
+            self.brnch_of_locs is not None
         ):
             return True
         else:
@@ -1627,12 +1624,12 @@ class CrntEmpType(GeneratedsSuper):
         else:
             outfile.write('/>%s' % (eol_, ))
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CrntEmpType'):
-        if self.orgNm is not None and 'orgNm' not in already_processed:
-            already_processed.add('orgNm')
-            outfile.write(' orgNm=%s' % (quote_attrib(self.orgNm), ))
-        if self.orgPK is not None and 'orgPK' not in already_processed:
-            already_processed.add('orgPK')
-            outfile.write(' orgPK=%s' % (quote_attrib(self.orgPK), ))
+        if self.org_nm is not None and 'org_nm' not in already_processed:
+            already_processed.add('org_nm')
+            outfile.write(' org_nm=%s' % (quote_attrib(self.org_nm), ))
+        if self.org_pk is not None and 'org_pk' not in already_processed:
+            already_processed.add('org_pk')
+            outfile.write(' org_pk=%s' % (quote_attrib(self.org_pk), ))
         if self.str1 is not None and 'str1' not in already_processed:
             already_processed.add('str1')
             outfile.write(' str1=%s' % (quote_attrib(self.str1), ))
@@ -1648,39 +1645,42 @@ class CrntEmpType(GeneratedsSuper):
         if self.cntry is not None and 'cntry' not in already_processed:
             already_processed.add('cntry')
             outfile.write(' cntry=%s' % (quote_attrib(self.cntry), ))
-        if self.postlCd is not None and 'postlCd' not in already_processed:
-            already_processed.add('postlCd')
-            outfile.write(' postlCd=%s' % (quote_attrib(self.postlCd), ))
+        if self.postl_cd is not None and 'postl_cd' not in already_processed:
+            already_processed.add('postl_cd')
+            outfile.write(' postl_cd=%s' % (quote_attrib(self.postl_cd), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CrntEmpType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.CrntRgstns is not None:
-            self.CrntRgstns.export(outfile, level, namespace_, name_='CrntRgstns', pretty_print=pretty_print)
-        if self.BrnchOfLocs is not None:
-            self.BrnchOfLocs.export(outfile, level, namespace_, name_='BrnchOfLocs', pretty_print=pretty_print)
-    def build(self, node):
+        if self.crnt_rgstns is not None:
+            self.crnt_rgstns.export(outfile, level, namespace_, name_='CrntRgstns', pretty_print=pretty_print)
+        if self.brnch_of_locs is not None:
+            self.brnch_of_locs.export(outfile, level, namespace_, name_='BrnchOfLocs', pretty_print=pretty_print)
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
+        if db_obj:
+            self.indvl_id = db_obj.id
+        db_obj = save_obj_to_db(self, CrntEmp)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('orgNm', node)
-        if value is not None and 'orgNm' not in already_processed:
-            already_processed.add('orgNm')
-            self.orgNm = value
-            self.validate_Str64(self.orgNm)    # validate type Str64
-        value = find_attr_value_('orgPK', node)
-        if value is not None and 'orgPK' not in already_processed:
-            already_processed.add('orgPK')
+        value = find_attr_value_('org_nm', node)
+        if value is not None and 'org_nm' not in already_processed:
+            already_processed.add('org_nm')
+            self.org_nm = value
+            self.validate_Str64(self.org_nm)    # validate type Str64
+        value = find_attr_value_('org_pk', node)
+        if value is not None and 'org_pk' not in already_processed:
+            already_processed.add('org_pk')
             try:
-                self.orgPK = int(value)
+                self.org_pk = int(value)
             except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
-            self.validate_Int10(self.orgPK)    # validate type Int10
+            self.validate_Int10(self.org_pk)    # validate type Int10
         value = find_attr_value_('str1', node)
         if value is not None and 'str1' not in already_processed:
             already_processed.add('str1')
@@ -1706,22 +1706,20 @@ class CrntEmpType(GeneratedsSuper):
             already_processed.add('cntry')
             self.cntry = value
             self.validate_Str50(self.cntry)    # validate type Str50
-        value = find_attr_value_('postlCd', node)
-        if value is not None and 'postlCd' not in already_processed:
-            already_processed.add('postlCd')
-            self.postlCd = value
-            self.validate_Str11(self.postlCd)    # validate type Str11
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+        value = find_attr_value_('postl_cd', node)
+        if value is not None and 'postl_cd' not in already_processed:
+            already_processed.add('postl_cd')
+            self.postl_cd = value
+            self.validate_Str11(self.postl_cd)    # validate type Str11
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'CrntRgstns':
             obj_ = CrntRgstnsType.factory()
-            obj_.build(child_)
-            self.CrntRgstns = obj_
-            obj_.original_tagname_ = 'CrntRgstns'
+            obj_.build(child_, parent)
+            self.crnt_rgstns = obj_
         elif nodeName_ == 'BrnchOfLocs':
             obj_ = BrnchOfLocsType.factory()
-            obj_.build(child_)
-            self.BrnchOfLocs = obj_
-            obj_.original_tagname_ = 'BrnchOfLocs'
+            obj_.build(child_, parent)
+            self.brnch_of_locs = obj_
 # end class CrntEmpType
 
 
@@ -1731,11 +1729,10 @@ class CrntRgstnsType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, CrntRgstn=None):
-        self.original_tagname_ = None
         if CrntRgstn is None:
-            self.CrntRgstn = []
+            self.crnt_rgstn = []
         else:
-            self.CrntRgstn = CrntRgstn
+            self.crnt_rgstn = CrntRgstn
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -1747,14 +1744,14 @@ class CrntRgstnsType(GeneratedsSuper):
         else:
             return CrntRgstnsType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_CrntRgstn(self): return self.CrntRgstn
-    def set_CrntRgstn(self, CrntRgstn): self.CrntRgstn = CrntRgstn
-    def add_CrntRgstn(self, value): self.CrntRgstn.append(value)
-    def insert_CrntRgstn_at(self, index, value): self.CrntRgstn.insert(index, value)
-    def replace_CrntRgstn_at(self, index, value): self.CrntRgstn[index] = value
+    def get_CrntRgstn(self): return self.crnt_rgstn
+    def set_CrntRgstn(self, CrntRgstn): self.crnt_rgstn = CrntRgstn
+    def add_CrntRgstn(self, value): self.crnt_rgstn.append(value)
+    def insert_CrntRgstn_at(self, index, value): self.crnt_rgstn.insert(index, value)
+    def replace_CrntRgstn_at(self, index, value): self.crnt_rgstn[index] = value
     def hasContent_(self):
         if (
-            self.CrntRgstn
+            self.crnt_rgstn
         ):
             return True
         else:
@@ -1787,23 +1784,22 @@ class CrntRgstnsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        for CrntRgstn_ in self.CrntRgstn:
+        for CrntRgstn_ in self.crnt_rgstn:
             CrntRgstn_.export(outfile, level, namespace_, name_='CrntRgstn', pretty_print=pretty_print)
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'CrntRgstn':
             obj_ = CrntRgstnType.factory()
-            obj_.build(child_)
-            self.CrntRgstn.append(obj_)
-            obj_.original_tagname_ = 'CrntRgstn'
+            obj_.build(child_, parent)
+            self.crnt_rgstn.append(obj_)
 # end class CrntRgstnsType
 
 
@@ -1814,12 +1810,11 @@ class CrntRgstnType(GeneratedsSuper):
     a status change was posted to the system. (YYYY-MM-DD)"""
     subclass = None
     superclass = None
-    def __init__(self, regAuth=None, regCat=None, st=None, stDt=None):
-        self.original_tagname_ = None
-        self.regAuth = _cast(None, regAuth)
-        self.regCat = _cast(None, regCat)
+    def __init__(self, reg_auth=None, reg_cat=None, st=None, st_dt=None):
+        self.reg_auth = _cast(None, reg_auth)
+        self.reg_cat = _cast(None, reg_cat)
         self.st = _cast(None, st)
-        self.stDt = _cast(None, stDt)
+        self.st_dt = _cast(None, st_dt)
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -1831,14 +1826,14 @@ class CrntRgstnType(GeneratedsSuper):
         else:
             return CrntRgstnType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_regAuth(self): return self.regAuth
-    def set_regAuth(self, regAuth): self.regAuth = regAuth
-    def get_regCat(self): return self.regCat
-    def set_regCat(self, regCat): self.regCat = regCat
+    def get_reg_auth(self): return self.reg_auth
+    def set_reg_auth(self, reg_auth): self.reg_auth = reg_auth
+    def get_reg_cat(self): return self.reg_cat
+    def set_reg_cat(self, reg_cat): self.reg_cat = reg_cat
     def get_st(self): return self.st
     def set_st(self, st): self.st = st
-    def get_stDt(self): return self.stDt
-    def set_stDt(self, stDt): self.stDt = stDt
+    def get_st_dt(self): return self.st_dt
+    def set_st_dt(self, st_dt): self.st_dt = st_dt
     def validate_StateCdType(self, value):
         # Validate type StateCdType, a restriction on xsd:NMTOKEN.
         if value is not None and Validate_simpletypes_:
@@ -1909,48 +1904,51 @@ class CrntRgstnType(GeneratedsSuper):
         else:
             outfile.write('/>%s' % (eol_, ))
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CrntRgstnType'):
-        if self.regAuth is not None and 'regAuth' not in already_processed:
-            already_processed.add('regAuth')
-            outfile.write(' regAuth=%s' % (quote_attrib(self.regAuth), ))
-        if self.regCat is not None and 'regCat' not in already_processed:
-            already_processed.add('regCat')
-            outfile.write(' regCat=%s' % (quote_attrib(self.regCat), ))
+        if self.reg_auth is not None and 'reg_auth' not in already_processed:
+            already_processed.add('reg_auth')
+            outfile.write(' reg_auth=%s' % (quote_attrib(self.reg_auth), ))
+        if self.reg_cat is not None and 'reg_cat' not in already_processed:
+            already_processed.add('reg_cat')
+            outfile.write(' reg_cat=%s' % (quote_attrib(self.reg_cat), ))
         if self.st is not None and 'st' not in already_processed:
             already_processed.add('st')
             outfile.write(' st=%s' % (quote_attrib(self.st), ))
-        if self.stDt is not None and 'stDt' not in already_processed:
-            already_processed.add('stDt')
-            outfile.write(' stDt=%s' % (quote_attrib(self.stDt), ))
+        if self.st_dt is not None and 'st_dt' not in already_processed:
+            already_processed.add('st_dt')
+            outfile.write(' st_dt=%s' % (quote_attrib(self.st_dt), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CrntRgstnType', fromsubclass_=False, pretty_print=True):
         pass
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
+        if db_obj:
+            self.crnt_emp_id = db_obj.id
+        db_obj = save_obj_to_db(self, CrntRgstn)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('regAuth', node)
-        if value is not None and 'regAuth' not in already_processed:
-            already_processed.add('regAuth')
-            self.regAuth = value
-            self.validate_StateCdType(self.regAuth)    # validate type StateCdType
-        value = find_attr_value_('regCat', node)
-        if value is not None and 'regCat' not in already_processed:
-            already_processed.add('regCat')
-            self.regCat = value
-            self.validate_registrationCategoryType(self.regCat)    # validate type registrationCategoryType
+        value = find_attr_value_('reg_auth', node)
+        if value is not None and 'reg_auth' not in already_processed:
+            already_processed.add('reg_auth')
+            self.reg_auth = value
+            self.validate_StateCdType(self.reg_auth)    # validate type StateCdType
+        value = find_attr_value_('reg_cat', node)
+        if value is not None and 'reg_cat' not in already_processed:
+            already_processed.add('reg_cat')
+            self.reg_cat = value
+            self.validate_registrationCategoryType(self.reg_cat)    # validate type registrationCategoryType
         value = find_attr_value_('st', node)
         if value is not None and 'st' not in already_processed:
             already_processed.add('st')
             self.st = value
             self.validate_registrationStatusCode(self.st)    # validate type registrationStatusCode
-        value = find_attr_value_('stDt', node)
-        if value is not None and 'stDt' not in already_processed:
-            already_processed.add('stDt')
-            self.stDt = value
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+        value = find_attr_value_('st_dt', node)
+        if value is not None and 'st_dt' not in already_processed:
+            already_processed.add('st_dt')
+            self.st_dt = value
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         pass
 # end class CrntRgstnType
 
@@ -1961,7 +1959,6 @@ class BrnchOfLocsType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, BrnchOfLoc=None):
-        self.original_tagname_ = None
         if BrnchOfLoc is None:
             self.BrnchOfLoc = []
         else:
@@ -2019,21 +2016,20 @@ class BrnchOfLocsType(GeneratedsSuper):
             eol_ = ''
         for BrnchOfLoc_ in self.BrnchOfLoc:
             BrnchOfLoc_.export(outfile, level, namespace_, name_='BrnchOfLoc', pretty_print=pretty_print)
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'BrnchOfLoc':
             obj_ = BrnchOfLocType.factory()
-            obj_.build(child_)
+            obj_.build(child_, parent)
             self.BrnchOfLoc.append(obj_)
-            obj_.original_tagname_ = 'BrnchOfLoc'
 # end class BrnchOfLocsType
 
 
@@ -2046,14 +2042,13 @@ class BrnchOfLocType(GeneratedsSuper):
     address - Postal Code"""
     subclass = None
     superclass = None
-    def __init__(self, str1=None, str2=None, city=None, state=None, cntry=None, postlCd=None):
-        self.original_tagname_ = None
+    def __init__(self, str1=None, str2=None, city=None, state=None, cntry=None, postl_cd=None):
         self.str1 = _cast(None, str1)
         self.str2 = _cast(None, str2)
         self.city = _cast(None, city)
         self.state = _cast(None, state)
         self.cntry = _cast(None, cntry)
-        self.postlCd = _cast(None, postlCd)
+        self.postl_cd = _cast(None, postl_cd)
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -2075,8 +2070,8 @@ class BrnchOfLocType(GeneratedsSuper):
     def set_state(self, state): self.state = state
     def get_cntry(self): return self.cntry
     def set_cntry(self, cntry): self.cntry = cntry
-    def get_postlCd(self): return self.postlCd
-    def set_postlCd(self, postlCd): self.postlCd = postlCd
+    def get_postl_cd(self): return self.postl_cd
+    def set_postl_cd(self, postl_cd): self.postl_cd = postl_cd
     def validate_Str50(self, value):
         # Validate type Str50, a restriction on xsd:string.
         if value is not None and Validate_simpletypes_:
@@ -2144,17 +2139,22 @@ class BrnchOfLocType(GeneratedsSuper):
         if self.cntry is not None and 'cntry' not in already_processed:
             already_processed.add('cntry')
             outfile.write(' cntry=%s' % (quote_attrib(self.cntry), ))
-        if self.postlCd is not None and 'postlCd' not in already_processed:
-            already_processed.add('postlCd')
-            outfile.write(' postlCd=%s' % (quote_attrib(self.postlCd), ))
+        if self.postl_cd is not None and 'postl_cd' not in already_processed:
+            already_processed.add('postl_cd')
+            outfile.write(' postl_cd=%s' % (quote_attrib(self.postl_cd), ))
     def exportChildren(self, outfile, level, namespace_='', name_='BrnchOfLocType', fromsubclass_=False, pretty_print=True):
         pass
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
+        if isinstance(db_obj, CrntEmp):
+            self.crnt_emp_id = db_obj.id
+        elif isinstance(db_obj, PrevRgstn):
+            self.prev_rgstn_id = db_obj.id
+        db_obj = save_obj_to_db(self, BrnchOfLoc)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         value = find_attr_value_('str1', node)
@@ -2182,12 +2182,12 @@ class BrnchOfLocType(GeneratedsSuper):
             already_processed.add('cntry')
             self.cntry = value
             self.validate_Str50(self.cntry)    # validate type Str50
-        value = find_attr_value_('postlCd', node)
-        if value is not None and 'postlCd' not in already_processed:
-            already_processed.add('postlCd')
-            self.postlCd = value
-            self.validate_Str11(self.postlCd)    # validate type Str11
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+        value = find_attr_value_('postl_cd', node)
+        if value is not None and 'postl_cd' not in already_processed:
+            already_processed.add('postl_cd')
+            self.postl_cd = value
+            self.validate_Str11(self.postl_cd)    # validate type Str11
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         pass
 # end class BrnchOfLocType
 
@@ -2199,11 +2199,10 @@ class ExmsType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, Exm=None):
-        self.original_tagname_ = None
         if Exm is None:
-            self.Exm = []
+            self.exm = []
         else:
-            self.Exm = Exm
+            self.exm = Exm
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -2215,14 +2214,14 @@ class ExmsType(GeneratedsSuper):
         else:
             return ExmsType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_Exm(self): return self.Exm
-    def set_Exm(self, Exm): self.Exm = Exm
-    def add_Exm(self, value): self.Exm.append(value)
-    def insert_Exm_at(self, index, value): self.Exm.insert(index, value)
-    def replace_Exm_at(self, index, value): self.Exm[index] = value
+    def get_Exm(self): return self.exm
+    def set_Exm(self, Exm): self.exm = Exm
+    def add_Exm(self, value): self.exm.append(value)
+    def insert_Exm_at(self, index, value): self.exm.insert(index, value)
+    def replace_Exm_at(self, index, value): self.exm[index] = value
     def hasContent_(self):
         if (
-            self.Exm
+            self.exm
         ):
             return True
         else:
@@ -2255,23 +2254,22 @@ class ExmsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        for Exm_ in self.Exm:
+        for Exm_ in self.exm:
             Exm_.export(outfile, level, namespace_, name_='Exm', pretty_print=pretty_print)
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'Exm':
             obj_ = ExmType.factory()
-            obj_.build(child_)
-            self.Exm.append(obj_)
-            obj_.original_tagname_ = 'Exm'
+            obj_.build(child_, parent)
+            self.exm.append(obj_)
 # end class ExmsType
 
 
@@ -2281,11 +2279,10 @@ class ExmType(GeneratedsSuper):
     taken.(YYYY-MM-DD)"""
     subclass = None
     superclass = None
-    def __init__(self, exmCd=None, exmNm=None, exmDt=None):
-        self.original_tagname_ = None
-        self.exmCd = _cast(None, exmCd)
-        self.exmNm = _cast(None, exmNm)
-        self.exmDt = _cast(None, exmDt)
+    def __init__(self, exm_cd=None, exm_nm=None, exm_dt=None):
+        self.exm_cd = _cast(None, exm_cd)
+        self.exm_nm = _cast(None, exm_nm)
+        self.exm_dt = _cast(None, exm_dt)
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -2297,12 +2294,12 @@ class ExmType(GeneratedsSuper):
         else:
             return ExmType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_exmCd(self): return self.exmCd
-    def set_exmCd(self, exmCd): self.exmCd = exmCd
-    def get_exmNm(self): return self.exmNm
-    def set_exmNm(self, exmNm): self.exmNm = exmNm
-    def get_exmDt(self): return self.exmDt
-    def set_exmDt(self, exmDt): self.exmDt = exmDt
+    def get_exm_cd(self): return self.exm_cd
+    def set_exm_cd(self, exm_cd): self.exm_cd = exm_cd
+    def get_exm_nm(self): return self.exm_nm
+    def set_exm_nm(self, exm_nm): self.exm_nm = exm_nm
+    def get_exm_dt(self): return self.exm_dt
+    def set_exm_dt(self, exm_dt): self.exm_dt = exm_dt
     def validate_examCodeType(self, value):
         # Validate type examCodeType, a restriction on xs:string.
         if value is not None and Validate_simpletypes_:
@@ -2350,40 +2347,43 @@ class ExmType(GeneratedsSuper):
         else:
             outfile.write('/>%s' % (eol_, ))
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='ExmType'):
-        if self.exmCd is not None and 'exmCd' not in already_processed:
-            already_processed.add('exmCd')
-            outfile.write(' exmCd=%s' % (quote_attrib(self.exmCd), ))
-        if self.exmNm is not None and 'exmNm' not in already_processed:
-            already_processed.add('exmNm')
-            outfile.write(' exmNm=%s' % (quote_attrib(self.exmNm), ))
-        if self.exmDt is not None and 'exmDt' not in already_processed:
-            already_processed.add('exmDt')
-            outfile.write(' exmDt=%s' % (quote_attrib(self.exmDt), ))
+        if self.exm_cd is not None and 'exm_cd' not in already_processed:
+            already_processed.add('exm_cd')
+            outfile.write(' exm_cd=%s' % (quote_attrib(self.exm_cd), ))
+        if self.exm_nm is not None and 'exm_nm' not in already_processed:
+            already_processed.add('exm_nm')
+            outfile.write(' exm_nm=%s' % (quote_attrib(self.exm_nm), ))
+        if self.exm_dt is not None and 'exm_dt' not in already_processed:
+            already_processed.add('exm_dt')
+            outfile.write(' exm_dt=%s' % (quote_attrib(self.exm_dt), ))
     def exportChildren(self, outfile, level, namespace_='', name_='ExmType', fromsubclass_=False, pretty_print=True):
         pass
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
+        if isinstance(db_obj, Indvl):
+            self.indvl_id = db_obj.id
+        db_obj = save_obj_to_db(self, Exm)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('exmCd', node)
-        if value is not None and 'exmCd' not in already_processed:
-            already_processed.add('exmCd')
-            self.exmCd = value
-            self.validate_examCodeType(self.exmCd)    # validate type examCodeType
-        value = find_attr_value_('exmNm', node)
-        if value is not None and 'exmNm' not in already_processed:
-            already_processed.add('exmNm')
-            self.exmNm = value
-            self.validate_Str128(self.exmNm)    # validate type Str128
-        value = find_attr_value_('exmDt', node)
-        if value is not None and 'exmDt' not in already_processed:
-            already_processed.add('exmDt')
-            self.exmDt = value
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+        value = find_attr_value_('exm_cd', node)
+        if value is not None and 'exm_cd' not in already_processed:
+            already_processed.add('exm_cd')
+            self.exm_cd = value
+            self.validate_examCodeType(self.exm_cd)    # validate type examCodeType
+        value = find_attr_value_('exm_nm', node)
+        if value is not None and 'exm_nm' not in already_processed:
+            already_processed.add('exm_nm')
+            self.exm_nm = value
+            self.validate_Str128(self.exm_nm)    # validate type Str128
+        value = find_attr_value_('exm_dt', node)
+        if value is not None and 'exm_dt' not in already_processed:
+            already_processed.add('exm_dt')
+            self.exm_dt = value
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         pass
 # end class ExmType
 
@@ -2394,11 +2394,10 @@ class DsgntnsType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, Dsgntn=None):
-        self.original_tagname_ = None
         if Dsgntn is None:
-            self.Dsgntn = []
+            self.dsgntn = []
         else:
-            self.Dsgntn = Dsgntn
+            self.dsgntn = Dsgntn
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -2410,14 +2409,14 @@ class DsgntnsType(GeneratedsSuper):
         else:
             return DsgntnsType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_Dsgntn(self): return self.Dsgntn
-    def set_Dsgntn(self, Dsgntn): self.Dsgntn = Dsgntn
-    def add_Dsgntn(self, value): self.Dsgntn.append(value)
-    def insert_Dsgntn_at(self, index, value): self.Dsgntn.insert(index, value)
-    def replace_Dsgntn_at(self, index, value): self.Dsgntn[index] = value
+    def get_Dsgntn(self): return self.dsgntn
+    def set_Dsgntn(self, Dsgntn): self.dsgntn = Dsgntn
+    def add_Dsgntn(self, value): self.dsgntn.append(value)
+    def insert_Dsgntn_at(self, index, value): self.dsgntn.insert(index, value)
+    def replace_Dsgntn_at(self, index, value): self.dsgntn[index] = value
     def hasContent_(self):
         if (
-            self.Dsgntn
+            self.dsgntn
         ):
             return True
         else:
@@ -2450,23 +2449,22 @@ class DsgntnsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        for Dsgntn_ in self.Dsgntn:
+        for Dsgntn_ in self.dsgntn:
             Dsgntn_.export(outfile, level, namespace_, name_='Dsgntn', pretty_print=pretty_print)
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'Dsgntn':
             obj_ = DsgntnType.factory()
-            obj_.build(child_)
-            self.Dsgntn.append(obj_)
-            obj_.original_tagname_ = 'Dsgntn'
+            obj_.build(child_, parent)
+            self.dsgntn.append(obj_)
 # end class DsgntnsType
 
 
@@ -2475,9 +2473,8 @@ class DsgntnType(GeneratedsSuper):
     individual. The designation code."""
     subclass = None
     superclass = None
-    def __init__(self, dsgntnNm=None):
-        self.original_tagname_ = None
-        self.dsgntnNm = _cast(None, dsgntnNm)
+    def __init__(self, dsgntn_nm=None):
+        self.dsgntn_nm = _cast(None, dsgntn_nm)
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -2489,8 +2486,8 @@ class DsgntnType(GeneratedsSuper):
         else:
             return DsgntnType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_dsgntnNm(self): return self.dsgntnNm
-    def set_dsgntnNm(self, dsgntnNm): self.dsgntnNm = dsgntnNm
+    def get_dsgntn_nm(self): return self.dsgntn_nm
+    def set_dsgntn_nm(self, dsgntn_nm): self.dsgntn_nm = dsgntn_nm
     def validate_Str128(self, value):
         # Validate type Str128, a restriction on xsd:string.
         if value is not None and Validate_simpletypes_:
@@ -2524,25 +2521,28 @@ class DsgntnType(GeneratedsSuper):
         else:
             outfile.write('/>%s' % (eol_, ))
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='DsgntnType'):
-        if self.dsgntnNm is not None and 'dsgntnNm' not in already_processed:
-            already_processed.add('dsgntnNm')
-            outfile.write(' dsgntnNm=%s' % (quote_attrib(self.dsgntnNm), ))
+        if self.dsgntn_nm is not None and 'dsgntn_nm' not in already_processed:
+            already_processed.add('dsgntn_nm')
+            outfile.write(' dsgntn_nm=%s' % (quote_attrib(self.dsgntn_nm), ))
     def exportChildren(self, outfile, level, namespace_='', name_='DsgntnType', fromsubclass_=False, pretty_print=True):
         pass
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
+        if isinstance(db_obj, Indvl):
+            self.indvl_id = db_obj.id
+        db_obj = save_obj_to_db(self, Dsgntn)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('dsgntnNm', node)
-        if value is not None and 'dsgntnNm' not in already_processed:
-            already_processed.add('dsgntnNm')
-            self.dsgntnNm = value
-            self.validate_Str128(self.dsgntnNm)    # validate type Str128
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+        value = find_attr_value_('dsgntn_nm', node)
+        if value is not None and 'dsgntn_nm' not in already_processed:
+            already_processed.add('dsgntn_nm')
+            self.dsgntn_nm = value
+            self.validate_Str128(self.dsgntn_nm)    # validate type Str128
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         pass
 # end class DsgntnType
 
@@ -2553,11 +2553,10 @@ class PrevRgstnsType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, PrevRgstn=None):
-        self.original_tagname_ = None
         if PrevRgstn is None:
-            self.PrevRgstn = []
+            self.prev_rgstn = []
         else:
-            self.PrevRgstn = PrevRgstn
+            self.prev_rgstn = PrevRgstn
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -2569,14 +2568,14 @@ class PrevRgstnsType(GeneratedsSuper):
         else:
             return PrevRgstnsType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_PrevRgstn(self): return self.PrevRgstn
-    def set_PrevRgstn(self, PrevRgstn): self.PrevRgstn = PrevRgstn
-    def add_PrevRgstn(self, value): self.PrevRgstn.append(value)
-    def insert_PrevRgstn_at(self, index, value): self.PrevRgstn.insert(index, value)
-    def replace_PrevRgstn_at(self, index, value): self.PrevRgstn[index] = value
+    def get_PrevRgstn(self): return self.prev_rgstn
+    def set_PrevRgstn(self, PrevRgstn): self.prev_rgstn = PrevRgstn
+    def add_PrevRgstn(self, value): self.prev_rgstn.append(value)
+    def insert_PrevRgstn_at(self, index, value): self.prev_rgstn.insert(index, value)
+    def replace_PrevRgstn_at(self, index, value): self.prev_rgstn[index] = value
     def hasContent_(self):
         if (
-            self.PrevRgstn
+            self.prev_rgstn
         ):
             return True
         else:
@@ -2609,23 +2608,22 @@ class PrevRgstnsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        for PrevRgstn_ in self.PrevRgstn:
+        for PrevRgstn_ in self.prev_rgstn:
             PrevRgstn_.export(outfile, level, namespace_, name_='PrevRgstn', pretty_print=pretty_print)
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'PrevRgstn':
             obj_ = PrevRgstnType.factory()
-            obj_.build(child_)
-            self.PrevRgstn.append(obj_)
-            obj_.original_tagname_ = 'PrevRgstn'
+            obj_.build(child_, parent)
+            self.prev_rgstn.append(obj_)
 # end class PrevRgstnsType
 
 
@@ -2637,16 +2635,15 @@ class PrevRgstnType(GeneratedsSuper):
     Registration End date. (YYYY-MM-DD)"""
     subclass = None
     superclass = None
-    def __init__(self, orgNm=None, orgPK=None, regBeginDt=None, regEndDt=None, BrnchOfLocs=None):
-        self.original_tagname_ = None
-        self.orgNm = _cast(None, orgNm)
-        self.orgPK = _cast(None, orgPK)
-        self.regBeginDt = _cast(None, regBeginDt)
-        self.regEndDt = _cast(None, regEndDt)
+    def __init__(self, org_nm=None, org_pk=None, reg_begin_dt=None, reg_end_dt=None, BrnchOfLocs=None):
+        self.org_nm = _cast(None, org_nm)
+        self.org_pk = _cast(None, org_pk)
+        self.reg_begin_dt = _cast(None, reg_begin_dt)
+        self.reg_end_dt = _cast(None, reg_end_dt)
         if BrnchOfLocs is None:
-            self.BrnchOfLocs = []
+            self.brnch_of_locs = []
         else:
-            self.BrnchOfLocs = BrnchOfLocs
+            self.brnch_of_locs = BrnchOfLocs
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -2658,19 +2655,19 @@ class PrevRgstnType(GeneratedsSuper):
         else:
             return PrevRgstnType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_BrnchOfLocs(self): return self.BrnchOfLocs
-    def set_BrnchOfLocs(self, BrnchOfLocs): self.BrnchOfLocs = BrnchOfLocs
-    def add_BrnchOfLocs(self, value): self.BrnchOfLocs.append(value)
-    def insert_BrnchOfLocs_at(self, index, value): self.BrnchOfLocs.insert(index, value)
-    def replace_BrnchOfLocs_at(self, index, value): self.BrnchOfLocs[index] = value
-    def get_orgNm(self): return self.orgNm
-    def set_orgNm(self, orgNm): self.orgNm = orgNm
-    def get_orgPK(self): return self.orgPK
-    def set_orgPK(self, orgPK): self.orgPK = orgPK
-    def get_regBeginDt(self): return self.regBeginDt
-    def set_regBeginDt(self, regBeginDt): self.regBeginDt = regBeginDt
-    def get_regEndDt(self): return self.regEndDt
-    def set_regEndDt(self, regEndDt): self.regEndDt = regEndDt
+    def get_BrnchOfLocs(self): return self.brnch_of_locs
+    def set_BrnchOfLocs(self, BrnchOfLocs): self.brnch_of_locs = BrnchOfLocs
+    def add_BrnchOfLocs(self, value): self.brnch_of_locs.append(value)
+    def insert_BrnchOfLocs_at(self, index, value): self.brnch_of_locs.insert(index, value)
+    def replace_BrnchOfLocs_at(self, index, value): self.brnch_of_locs[index] = value
+    def get_org_nm(self): return self.org_nm
+    def set_org_nm(self, org_nm): self.org_nm = org_nm
+    def get_org_pk(self): return self.org_pk
+    def set_org_pk(self, org_pk): self.org_pk = org_pk
+    def get_reg_begin_dt(self): return self.reg_begin_dt
+    def set_reg_begin_dt(self, reg_begin_dt): self.reg_begin_dt = reg_begin_dt
+    def get_reg_end_dt(self): return self.reg_end_dt
+    def set_reg_end_dt(self, reg_end_dt): self.reg_end_dt = reg_end_dt
     def validate_Str64(self, value):
         # Validate type Str64, a restriction on xsd:string.
         if value is not None and Validate_simpletypes_:
@@ -2683,7 +2680,7 @@ class PrevRgstnType(GeneratedsSuper):
                 warnings_.warn('Value "%(value)s" does not match xsd maxInclusive restriction on Int10' % {"value" : value} )
     def hasContent_(self):
         if (
-            self.BrnchOfLocs
+            self.brnch_of_locs
         ):
             return True
         else:
@@ -2710,60 +2707,64 @@ class PrevRgstnType(GeneratedsSuper):
         else:
             outfile.write('/>%s' % (eol_, ))
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='PrevRgstnType'):
-        if self.orgNm is not None and 'orgNm' not in already_processed:
-            already_processed.add('orgNm')
-            outfile.write(' orgNm=%s' % (quote_attrib(self.orgNm), ))
-        if self.orgPK is not None and 'orgPK' not in already_processed:
-            already_processed.add('orgPK')
-            outfile.write(' orgPK=%s' % (quote_attrib(self.orgPK), ))
-        if self.regBeginDt is not None and 'regBeginDt' not in already_processed:
-            already_processed.add('regBeginDt')
-            outfile.write(' regBeginDt=%s' % (quote_attrib(self.regBeginDt), ))
-        if self.regEndDt is not None and 'regEndDt' not in already_processed:
-            already_processed.add('regEndDt')
-            outfile.write(' regEndDt=%s' % (quote_attrib(self.regEndDt), ))
+        if self.org_nm is not None and 'org_nm' not in already_processed:
+            already_processed.add('org_nm')
+            outfile.write(' org_nm=%s' % (quote_attrib(self.org_nm), ))
+        if self.org_pk is not None and 'org_pk' not in already_processed:
+            already_processed.add('org_pk')
+            outfile.write(' org_pk=%s' % (quote_attrib(self.org_pk), ))
+        if self.reg_begin_dt is not None and 'reg_begin_dt' not in already_processed:
+            already_processed.add('reg_begin_dt')
+            outfile.write(' reg_begin_dt=%s' % (quote_attrib(self.reg_begin_dt), ))
+        if self.reg_end_dt is not None and 'reg_end_dt' not in already_processed:
+            already_processed.add('reg_end_dt')
+            outfile.write(' reg_end_dt=%s' % (quote_attrib(self.reg_end_dt), ))
     def exportChildren(self, outfile, level, namespace_='', name_='PrevRgstnType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
-        for BrnchOfLocs_ in self.BrnchOfLocs:
+        for BrnchOfLocs_ in self.brnch_of_locs:
             BrnchOfLocs_.export(outfile, level, namespace_, name_='BrnchOfLocs', pretty_print=pretty_print)
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
+        if isinstance(db_obj, Indvl):
+            self.indvl_id = db_obj.id
+        elif isinstance(db_obj, IAPDReport):
+            self.iapd_report_id = db_obj.id
+        db_obj = save_obj_to_db(self, PrevRgstn)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('orgNm', node)
-        if value is not None and 'orgNm' not in already_processed:
-            already_processed.add('orgNm')
-            self.orgNm = value
-            self.validate_Str64(self.orgNm)    # validate type Str64
-        value = find_attr_value_('orgPK', node)
-        if value is not None and 'orgPK' not in already_processed:
-            already_processed.add('orgPK')
+        value = find_attr_value_('org_nm', node)
+        if value is not None and 'org_nm' not in already_processed:
+            already_processed.add('org_nm')
+            self.org_nm = value
+            self.validate_Str64(self.org_nm)    # validate type Str64
+        value = find_attr_value_('org_pk', node)
+        if value is not None and 'org_pk' not in already_processed:
+            already_processed.add('org_pk')
             try:
-                self.orgPK = int(value)
+                self.org_pk = int(value)
             except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
-            self.validate_Int10(self.orgPK)    # validate type Int10
-        value = find_attr_value_('regBeginDt', node)
-        if value is not None and 'regBeginDt' not in already_processed:
-            already_processed.add('regBeginDt')
-            self.regBeginDt = value
-        value = find_attr_value_('regEndDt', node)
-        if value is not None and 'regEndDt' not in already_processed:
-            already_processed.add('regEndDt')
-            self.regEndDt = value
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+            self.validate_Int10(self.org_pk)    # validate type Int10
+        value = find_attr_value_('reg_begin_dt', node)
+        if value is not None and 'reg_begin_dt' not in already_processed:
+            already_processed.add('reg_begin_dt')
+            self.reg_begin_dt = value
+        value = find_attr_value_('reg_end_dt', node)
+        if value is not None and 'reg_end_dt' not in already_processed:
+            already_processed.add('reg_end_dt')
+            self.reg_end_dt = value
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'BrnchOfLocs':
             obj_ = PrevBrnchOfLocsType.factory()
-            obj_.build(child_)
-            self.BrnchOfLocs.append(obj_)
-            obj_.original_tagname_ = 'BrnchOfLocs'
+            obj_.build(child_, parent)
+            self.brnch_of_locs.append(obj_)
 # end class PrevRgstnType
 
 
@@ -2773,11 +2774,10 @@ class PrevBrnchOfLocsType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, BrnchOfLoc=None):
-        self.original_tagname_ = None
         if BrnchOfLoc is None:
-            self.BrnchOfLoc = []
+            self.brnch_of_loc = []
         else:
-            self.BrnchOfLoc = BrnchOfLoc
+            self.brnch_of_loc = BrnchOfLoc
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -2789,14 +2789,14 @@ class PrevBrnchOfLocsType(GeneratedsSuper):
         else:
             return PrevBrnchOfLocsType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_BrnchOfLoc(self): return self.BrnchOfLoc
-    def set_BrnchOfLoc(self, BrnchOfLoc): self.BrnchOfLoc = BrnchOfLoc
-    def add_BrnchOfLoc(self, value): self.BrnchOfLoc.append(value)
-    def insert_BrnchOfLoc_at(self, index, value): self.BrnchOfLoc.insert(index, value)
-    def replace_BrnchOfLoc_at(self, index, value): self.BrnchOfLoc[index] = value
+    def get_BrnchOfLoc(self): return self.brnch_of_loc
+    def set_BrnchOfLoc(self, BrnchOfLoc): self.brnch_of_loc = BrnchOfLoc
+    def add_BrnchOfLoc(self, value): self.brnch_of_loc.append(value)
+    def insert_BrnchOfLoc_at(self, index, value): self.brnch_of_loc.insert(index, value)
+    def replace_BrnchOfLoc_at(self, index, value): self.brnch_of_loc[index] = value
     def hasContent_(self):
         if (
-            self.BrnchOfLoc
+            self.brnch_of_loc
         ):
             return True
         else:
@@ -2829,23 +2829,22 @@ class PrevBrnchOfLocsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        for BrnchOfLoc_ in self.BrnchOfLoc:
+        for BrnchOfLoc_ in self.brnch_of_loc:
             BrnchOfLoc_.export(outfile, level, namespace_, name_='BrnchOfLoc', pretty_print=pretty_print)
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'BrnchOfLoc':
             obj_ = PrevBrnchOfLocType.factory()
-            obj_.build(child_)
-            self.BrnchOfLoc.append(obj_)
-            obj_.original_tagname_ = 'BrnchOfLoc'
+            obj_.build(child_, parent)
+            self.brnch_of_loc.append(obj_)
 # end class PrevBrnchOfLocsType
 
 
@@ -2855,7 +2854,6 @@ class PrevBrnchOfLocType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, city=None, state=None):
-        self.original_tagname_ = None
         self.city = _cast(None, city)
         self.state = _cast(None, state)
     def factory(*args_, **kwargs_):
@@ -2928,12 +2926,17 @@ class PrevBrnchOfLocType(GeneratedsSuper):
             outfile.write(' state=%s' % (quote_attrib(self.state), ))
     def exportChildren(self, outfile, level, namespace_='', name_='PrevBrnchOfLocType', fromsubclass_=False, pretty_print=True):
         pass
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
+        if isinstance(db_obj, CrntEmp):
+            self.crnt_emp_id = db_obj.id
+        elif isinstance(db_obj, PrevRgstn):
+            self.prev_rgstn_id = db_obj.id
+        db_obj = save_obj_to_db(self, PrevBrnchOfLoc)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         value = find_attr_value_('city', node)
@@ -2946,7 +2949,7 @@ class PrevBrnchOfLocType(GeneratedsSuper):
             already_processed.add('state')
             self.state = value
             self.validate_StateCdType(self.state)    # validate type StateCdType
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         pass
 # end class PrevBrnchOfLocType
 
@@ -2957,11 +2960,10 @@ class EmpHistsType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, EmpHs=None):
-        self.original_tagname_ = None
         if EmpHs is None:
-            self.EmpHs = []
+            self.emp_hs = []
         else:
-            self.EmpHs = EmpHs
+            self.emp_hs = EmpHs
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -2973,14 +2975,14 @@ class EmpHistsType(GeneratedsSuper):
         else:
             return EmpHistsType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_EmpHs(self): return self.EmpHs
-    def set_EmpHs(self, EmpHs): self.EmpHs = EmpHs
-    def add_EmpHs(self, value): self.EmpHs.append(value)
-    def insert_EmpHs_at(self, index, value): self.EmpHs.insert(index, value)
-    def replace_EmpHs_at(self, index, value): self.EmpHs[index] = value
+    def get_EmpHs(self): return self.emp_hs
+    def set_EmpHs(self, EmpHs): self.emp_hs = EmpHs
+    def add_EmpHs(self, value): self.emp_hs.append(value)
+    def insert_EmpHs_at(self, index, value): self.emp_hs.insert(index, value)
+    def replace_EmpHs_at(self, index, value): self.emp_hs[index] = value
     def hasContent_(self):
         if (
-            self.EmpHs
+            self.emp_hs
         ):
             return True
         else:
@@ -3013,23 +3015,22 @@ class EmpHistsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        for EmpHs_ in self.EmpHs:
+        for EmpHs_ in self.emp_hs:
             EmpHs_.export(outfile, level, namespace_, name_='EmpHs', pretty_print=pretty_print)
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'EmpHs':
             obj_ = EmpHistType.factory()
-            obj_.build(child_)
-            self.EmpHs.append(obj_)
-            obj_.original_tagname_ = 'EmpHs'
+            obj_.build(child_, parent)
+            self.emp_hs.append(obj_)
 # end class EmpHistsType
 
 
@@ -3040,11 +3041,10 @@ class EmpHistType(GeneratedsSuper):
     Employment. State of Employment."""
     subclass = None
     superclass = None
-    def __init__(self, fromDt=None, toDt=None, orgNm=None, city=None, state=None):
-        self.original_tagname_ = None
-        self.fromDt = _cast(None, fromDt)
-        self.toDt = _cast(None, toDt)
-        self.orgNm = _cast(None, orgNm)
+    def __init__(self, from_dt=None, to_dt=None, org_nm=None, city=None, state=None):
+        self.from_dt = _cast(None, from_dt)
+        self.to_dt = _cast(None, to_dt)
+        self.org_nm = _cast(None, org_nm)
         self.city = _cast(None, city)
         self.state = _cast(None, state)
     def factory(*args_, **kwargs_):
@@ -3058,12 +3058,12 @@ class EmpHistType(GeneratedsSuper):
         else:
             return EmpHistType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_fromDt(self): return self.fromDt
-    def set_fromDt(self, fromDt): self.fromDt = fromDt
-    def get_toDt(self): return self.toDt
-    def set_toDt(self, toDt): self.toDt = toDt
-    def get_orgNm(self): return self.orgNm
-    def set_orgNm(self, orgNm): self.orgNm = orgNm
+    def get_from_dt(self): return self.from_dt
+    def set_from_dt(self, from_dt): self.from_dt = from_dt
+    def get_to_dt(self): return self.to_dt
+    def set_to_dt(self, to_dt): self.to_dt = to_dt
+    def get_org_nm(self): return self.org_nm
+    def set_org_nm(self, org_nm): self.org_nm = org_nm
     def get_city(self): return self.city
     def set_city(self, city): self.city = city
     def get_state(self): return self.state
@@ -3125,15 +3125,15 @@ class EmpHistType(GeneratedsSuper):
         else:
             outfile.write('/>%s' % (eol_, ))
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='EmpHistType'):
-        if self.fromDt is not None and 'fromDt' not in already_processed:
-            already_processed.add('fromDt')
-            outfile.write(' fromDt=%s' % (quote_attrib(self.fromDt), ))
-        if self.toDt is not None and 'toDt' not in already_processed:
-            already_processed.add('toDt')
-            outfile.write(' toDt=%s' % (quote_attrib(self.toDt), ))
-        if self.orgNm is not None and 'orgNm' not in already_processed:
-            already_processed.add('orgNm')
-            outfile.write(' orgNm=%s' % (quote_attrib(self.orgNm), ))
+        if self.from_dt is not None and 'from_dt' not in already_processed:
+            already_processed.add('from_dt')
+            outfile.write(' from_dt=%s' % (quote_attrib(self.from_dt), ))
+        if self.to_dt is not None and 'to_dt' not in already_processed:
+            already_processed.add('to_dt')
+            outfile.write(' to_dt=%s' % (quote_attrib(self.to_dt), ))
+        if self.org_nm is not None and 'org_nm' not in already_processed:
+            already_processed.add('org_nm')
+            outfile.write(' org_nm=%s' % (quote_attrib(self.org_nm), ))
         if self.city is not None and 'city' not in already_processed:
             already_processed.add('city')
             outfile.write(' city=%s' % (quote_attrib(self.city), ))
@@ -3142,29 +3142,32 @@ class EmpHistType(GeneratedsSuper):
             outfile.write(' state=%s' % (quote_attrib(self.state), ))
     def exportChildren(self, outfile, level, namespace_='', name_='EmpHistType', fromsubclass_=False, pretty_print=True):
         pass
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
+        if isinstance(db_obj, Indvl):
+            self.indvl_id = db_obj.id
+        db_obj = save_obj_to_db(self, EmpHist)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('fromDt', node)
-        if value is not None and 'fromDt' not in already_processed:
-            already_processed.add('fromDt')
-            self.fromDt = value
-            self.validate_Str7(self.fromDt)    # validate type Str7
-        value = find_attr_value_('toDt', node)
-        if value is not None and 'toDt' not in already_processed:
-            already_processed.add('toDt')
-            self.toDt = value
-            self.validate_Str7(self.toDt)    # validate type Str7
-        value = find_attr_value_('orgNm', node)
-        if value is not None and 'orgNm' not in already_processed:
-            already_processed.add('orgNm')
-            self.orgNm = value
-            self.validate_Str64(self.orgNm)    # validate type Str64
+        value = find_attr_value_('from_dt', node)
+        if value is not None and 'from_dt' not in already_processed:
+            already_processed.add('from_dt')
+            self.from_dt = value
+            self.validate_Str7(self.from_dt)    # validate type Str7
+        value = find_attr_value_('to_dt', node)
+        if value is not None and 'to_dt' not in already_processed:
+            already_processed.add('to_dt')
+            self.to_dt = value
+            self.validate_Str7(self.to_dt)    # validate type Str7
+        value = find_attr_value_('org_nm', node)
+        if value is not None and 'org_nm' not in already_processed:
+            already_processed.add('org_nm')
+            self.org_nm = value
+            self.validate_Str64(self.org_nm)    # validate type Str64
         value = find_attr_value_('city', node)
         if value is not None and 'city' not in already_processed:
             already_processed.add('city')
@@ -3175,7 +3178,7 @@ class EmpHistType(GeneratedsSuper):
             already_processed.add('state')
             self.state = value
             self.validate_StateCdType(self.state)    # validate type StateCdType
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         pass
 # end class EmpHistType
 
@@ -3186,8 +3189,7 @@ class OthrBussType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, OthrBus=None):
-        self.original_tagname_ = None
-        self.OthrBus = OthrBus
+        self.othr_bus = OthrBus
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -3199,11 +3201,11 @@ class OthrBussType(GeneratedsSuper):
         else:
             return OthrBussType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_OthrBus(self): return self.OthrBus
-    def set_OthrBus(self, OthrBus): self.OthrBus = OthrBus
+    def get_OthrBus(self): return self.othr_bus
+    def set_OthrBus(self, OthrBus): self.othr_bus = OthrBus
     def hasContent_(self):
         if (
-            self.OthrBus is not None
+            self.othr_bus is not None
         ):
             return True
         else:
@@ -3236,23 +3238,22 @@ class OthrBussType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.OthrBus is not None:
-            self.OthrBus.export(outfile, level, namespace_, name_='OthrBus', pretty_print=pretty_print)
-    def build(self, node):
+        if self.othr_bus is not None:
+            self.othr_bus.export(outfile, level, namespace_, name_='OthrBus', pretty_print=pretty_print)
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'OthrBus':
             obj_ = OthrBusType.factory()
-            obj_.build(child_)
-            self.OthrBus = obj_
-            obj_.original_tagname_ = 'OthrBus'
+            obj_.build(child_, parent)
+            self.othr_bus = obj_
 # end class OthrBussType
 
 
@@ -3261,7 +3262,6 @@ class OthrBusType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, desc=None):
-        self.original_tagname_ = None
         self.desc = _cast(None, desc)
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
@@ -3314,12 +3314,15 @@ class OthrBusType(GeneratedsSuper):
             outfile.write(' desc=%s' % (quote_attrib(self.desc), ))
     def exportChildren(self, outfile, level, namespace_='', name_='OthrBusType', fromsubclass_=False, pretty_print=True):
         pass
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
+        if isinstance(db_obj, Indvl):
+            self.indvl_id = db_obj.id
+        db_obj = save_obj_to_db(self, OthrBus)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         value = find_attr_value_('desc', node)
@@ -3327,7 +3330,7 @@ class OthrBusType(GeneratedsSuper):
             already_processed.add('desc')
             self.desc = value
             self.validate_Str4000(self.desc)    # validate type Str4000
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         pass
 # end class OthrBusType
 
@@ -3338,11 +3341,10 @@ class DRPsType(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, DRP=None):
-        self.original_tagname_ = None
         if DRP is None:
-            self.DRP = []
+            self.drp = []
         else:
-            self.DRP = DRP
+            self.drp = DRP
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -3354,14 +3356,14 @@ class DRPsType(GeneratedsSuper):
         else:
             return DRPsType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_DRP(self): return self.DRP
-    def set_DRP(self, DRP): self.DRP = DRP
-    def add_DRP(self, value): self.DRP.append(value)
-    def insert_DRP_at(self, index, value): self.DRP.insert(index, value)
-    def replace_DRP_at(self, index, value): self.DRP[index] = value
+    def get_DRP(self): return self.drp
+    def set_DRP(self, DRP): self.drp = DRP
+    def add_DRP(self, value): self.drp.append(value)
+    def insert_DRP_at(self, index, value): self.drp.insert(index, value)
+    def replace_DRP_at(self, index, value): self.drp[index] = value
     def hasContent_(self):
         if (
-            self.DRP
+            self.drp
         ):
             return True
         else:
@@ -3394,23 +3396,22 @@ class DRPsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        for DRP_ in self.DRP:
+        for DRP_ in self.drp:
             DRP_.export(outfile, level, namespace_, name_='DRP', pretty_print=pretty_print)
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         if nodeName_ == 'DRP':
             obj_ = DRPType.factory()
-            obj_.build(child_)
-            self.DRP.append(obj_)
-            obj_.original_tagname_ = 'DRP'
+            obj_.build(child_, parent)
+            self.drp.append(obj_)
 # end class DRPsType
 
 
@@ -3425,17 +3426,16 @@ class DRPType(GeneratedsSuper):
     DRP. Flag to indicate the indvl has Termination DRP."""
     subclass = None
     superclass = None
-    def __init__(self, hasRegAction=None, hasCriminal=None, hasBankrupt=None, hasCivilJudc=None, hasBond=None, hasJudgment=None, hasInvstgn=None, hasCustComp=None, hasTermination=None):
-        self.original_tagname_ = None
-        self.hasRegAction = _cast(None, hasRegAction)
-        self.hasCriminal = _cast(None, hasCriminal)
-        self.hasBankrupt = _cast(None, hasBankrupt)
-        self.hasCivilJudc = _cast(None, hasCivilJudc)
-        self.hasBond = _cast(None, hasBond)
-        self.hasJudgment = _cast(None, hasJudgment)
-        self.hasInvstgn = _cast(None, hasInvstgn)
-        self.hasCustComp = _cast(None, hasCustComp)
-        self.hasTermination = _cast(None, hasTermination)
+    def __init__(self, has_reg_action=None, has_criminal=None, has_bankrupt=None, has_civil_judc=None, has_bond=None, has_judgment=None, has_invstgn=None, has_cust_comp=None, has_termination=None):
+        self.has_reg_action = _cast(None, has_reg_action)
+        self.has_criminal = _cast(None, has_criminal)
+        self.has_bankrupt = _cast(None, has_bankrupt)
+        self.has_civil_judc = _cast(None, has_civil_judc)
+        self.has_bond = _cast(None, has_bond)
+        self.has_judgment = _cast(None, has_judgment)
+        self.has_invstgn = _cast(None, has_invstgn)
+        self.has_cust_comp = _cast(None, has_cust_comp)
+        self.has_termination = _cast(None, has_termination)
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -3447,24 +3447,24 @@ class DRPType(GeneratedsSuper):
         else:
             return DRPType(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_hasRegAction(self): return self.hasRegAction
-    def set_hasRegAction(self, hasRegAction): self.hasRegAction = hasRegAction
-    def get_hasCriminal(self): return self.hasCriminal
-    def set_hasCriminal(self, hasCriminal): self.hasCriminal = hasCriminal
-    def get_hasBankrupt(self): return self.hasBankrupt
-    def set_hasBankrupt(self, hasBankrupt): self.hasBankrupt = hasBankrupt
-    def get_hasCivilJudc(self): return self.hasCivilJudc
-    def set_hasCivilJudc(self, hasCivilJudc): self.hasCivilJudc = hasCivilJudc
-    def get_hasBond(self): return self.hasBond
-    def set_hasBond(self, hasBond): self.hasBond = hasBond
-    def get_hasJudgment(self): return self.hasJudgment
-    def set_hasJudgment(self, hasJudgment): self.hasJudgment = hasJudgment
-    def get_hasInvstgn(self): return self.hasInvstgn
-    def set_hasInvstgn(self, hasInvstgn): self.hasInvstgn = hasInvstgn
-    def get_hasCustComp(self): return self.hasCustComp
-    def set_hasCustComp(self, hasCustComp): self.hasCustComp = hasCustComp
-    def get_hasTermination(self): return self.hasTermination
-    def set_hasTermination(self, hasTermination): self.hasTermination = hasTermination
+    def get_has_reg_action(self): return self.has_reg_action
+    def set_has_reg_action(self, has_reg_action): self.has_reg_action = has_reg_action
+    def get_has_criminal(self): return self.has_criminal
+    def set_has_criminal(self, has_criminal): self.has_criminal = has_criminal
+    def get_has_bankrupt(self): return self.has_bankrupt
+    def set_has_bankrupt(self, has_bankrupt): self.has_bankrupt = has_bankrupt
+    def get_has_civil_judc(self): return self.has_civil_judc
+    def set_has_civil_judc(self, has_civil_judc): self.has_civil_judc = has_civil_judc
+    def get_has_bond(self): return self.has_bond
+    def set_has_bond(self, has_bond): self.has_bond = has_bond
+    def get_has_judgment(self): return self.has_judgment
+    def set_has_judgment(self, has_judgment): self.has_judgment = has_judgment
+    def get_has_invstgn(self): return self.has_invstgn
+    def set_has_invstgn(self, has_invstgn): self.has_invstgn = has_invstgn
+    def get_has_cust_comp(self): return self.has_cust_comp
+    def set_has_cust_comp(self, has_cust_comp): self.has_cust_comp = has_cust_comp
+    def get_has_termination(self): return self.has_termination
+    def set_has_termination(self, has_termination): self.has_termination = has_termination
     def validate_answerYNType(self, value):
         # Validate type answerYNType, a restriction on xsd:string.
         if value is not None and Validate_simpletypes_:
@@ -3505,89 +3505,92 @@ class DRPType(GeneratedsSuper):
         else:
             outfile.write('/>%s' % (eol_, ))
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='DRPType'):
-        if self.hasRegAction is not None and 'hasRegAction' not in already_processed:
-            already_processed.add('hasRegAction')
-            outfile.write(' hasRegAction=%s' % (quote_attrib(self.hasRegAction), ))
-        if self.hasCriminal is not None and 'hasCriminal' not in already_processed:
-            already_processed.add('hasCriminal')
-            outfile.write(' hasCriminal=%s' % (quote_attrib(self.hasCriminal), ))
-        if self.hasBankrupt is not None and 'hasBankrupt' not in already_processed:
-            already_processed.add('hasBankrupt')
-            outfile.write(' hasBankrupt=%s' % (quote_attrib(self.hasBankrupt), ))
-        if self.hasCivilJudc is not None and 'hasCivilJudc' not in already_processed:
-            already_processed.add('hasCivilJudc')
-            outfile.write(' hasCivilJudc=%s' % (quote_attrib(self.hasCivilJudc), ))
-        if self.hasBond is not None and 'hasBond' not in already_processed:
-            already_processed.add('hasBond')
-            outfile.write(' hasBond=%s' % (quote_attrib(self.hasBond), ))
-        if self.hasJudgment is not None and 'hasJudgment' not in already_processed:
-            already_processed.add('hasJudgment')
-            outfile.write(' hasJudgment=%s' % (quote_attrib(self.hasJudgment), ))
-        if self.hasInvstgn is not None and 'hasInvstgn' not in already_processed:
-            already_processed.add('hasInvstgn')
-            outfile.write(' hasInvstgn=%s' % (quote_attrib(self.hasInvstgn), ))
-        if self.hasCustComp is not None and 'hasCustComp' not in already_processed:
-            already_processed.add('hasCustComp')
-            outfile.write(' hasCustComp=%s' % (quote_attrib(self.hasCustComp), ))
-        if self.hasTermination is not None and 'hasTermination' not in already_processed:
-            already_processed.add('hasTermination')
-            outfile.write(' hasTermination=%s' % (quote_attrib(self.hasTermination), ))
+        if self.has_reg_action is not None and 'has_reg_action' not in already_processed:
+            already_processed.add('has_reg_action')
+            outfile.write(' has_reg_action=%s' % (quote_attrib(self.has_reg_action), ))
+        if self.has_criminal is not None and 'has_criminal' not in already_processed:
+            already_processed.add('has_criminal')
+            outfile.write(' has_criminal=%s' % (quote_attrib(self.has_criminal), ))
+        if self.has_bankrupt is not None and 'has_bankrupt' not in already_processed:
+            already_processed.add('has_bankrupt')
+            outfile.write(' has_bankrupt=%s' % (quote_attrib(self.has_bankrupt), ))
+        if self.has_civil_judc is not None and 'has_civil_judc' not in already_processed:
+            already_processed.add('has_civil_judc')
+            outfile.write(' has_civil_judc=%s' % (quote_attrib(self.has_civil_judc), ))
+        if self.has_bond is not None and 'has_bond' not in already_processed:
+            already_processed.add('has_bond')
+            outfile.write(' has_bond=%s' % (quote_attrib(self.has_bond), ))
+        if self.has_judgment is not None and 'has_judgment' not in already_processed:
+            already_processed.add('has_judgment')
+            outfile.write(' has_judgment=%s' % (quote_attrib(self.has_judgment), ))
+        if self.has_invstgn is not None and 'has_invstgn' not in already_processed:
+            already_processed.add('has_invstgn')
+            outfile.write(' has_invstgn=%s' % (quote_attrib(self.has_invstgn), ))
+        if self.has_cust_comp is not None and 'has_cust_comp' not in already_processed:
+            already_processed.add('has_cust_comp')
+            outfile.write(' has_cust_comp=%s' % (quote_attrib(self.has_cust_comp), ))
+        if self.has_termination is not None and 'has_termination' not in already_processed:
+            already_processed.add('has_termination')
+            outfile.write(' has_termination=%s' % (quote_attrib(self.has_termination), ))
     def exportChildren(self, outfile, level, namespace_='', name_='DRPType', fromsubclass_=False, pretty_print=True):
         pass
-    def build(self, node):
+    def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
+        if isinstance(db_obj, Indvl):
+            self.indvl_id = db_obj.id
+        db_obj = save_obj_to_db(self, DRP)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
+            self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('hasRegAction', node)
-        if value is not None and 'hasRegAction' not in already_processed:
-            already_processed.add('hasRegAction')
-            self.hasRegAction = value
-            self.validate_answerYNType(self.hasRegAction)    # validate type answerYNType
-        value = find_attr_value_('hasCriminal', node)
-        if value is not None and 'hasCriminal' not in already_processed:
-            already_processed.add('hasCriminal')
-            self.hasCriminal = value
-            self.validate_answerYNType(self.hasCriminal)    # validate type answerYNType
-        value = find_attr_value_('hasBankrupt', node)
-        if value is not None and 'hasBankrupt' not in already_processed:
-            already_processed.add('hasBankrupt')
-            self.hasBankrupt = value
-            self.validate_answerYNType(self.hasBankrupt)    # validate type answerYNType
-        value = find_attr_value_('hasCivilJudc', node)
-        if value is not None and 'hasCivilJudc' not in already_processed:
-            already_processed.add('hasCivilJudc')
-            self.hasCivilJudc = value
-            self.validate_answerYNType(self.hasCivilJudc)    # validate type answerYNType
-        value = find_attr_value_('hasBond', node)
-        if value is not None and 'hasBond' not in already_processed:
-            already_processed.add('hasBond')
-            self.hasBond = value
-            self.validate_answerYNType(self.hasBond)    # validate type answerYNType
-        value = find_attr_value_('hasJudgment', node)
-        if value is not None and 'hasJudgment' not in already_processed:
-            already_processed.add('hasJudgment')
-            self.hasJudgment = value
-            self.validate_answerYNType(self.hasJudgment)    # validate type answerYNType
-        value = find_attr_value_('hasInvstgn', node)
-        if value is not None and 'hasInvstgn' not in already_processed:
-            already_processed.add('hasInvstgn')
-            self.hasInvstgn = value
-            self.validate_answerYNType(self.hasInvstgn)    # validate type answerYNType
-        value = find_attr_value_('hasCustComp', node)
-        if value is not None and 'hasCustComp' not in already_processed:
-            already_processed.add('hasCustComp')
-            self.hasCustComp = value
-            self.validate_answerYNType(self.hasCustComp)    # validate type answerYNType
-        value = find_attr_value_('hasTermination', node)
-        if value is not None and 'hasTermination' not in already_processed:
-            already_processed.add('hasTermination')
-            self.hasTermination = value
-            self.validate_answerYNType(self.hasTermination)    # validate type answerYNType
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
+        value = find_attr_value_('has_reg_action', node)
+        if value is not None and 'has_reg_action' not in already_processed:
+            already_processed.add('has_reg_action')
+            self.has_reg_action = value
+            self.validate_answerYNType(self.has_reg_action)    # validate type answerYNType
+        value = find_attr_value_('has_criminal', node)
+        if value is not None and 'has_criminal' not in already_processed:
+            already_processed.add('has_criminal')
+            self.has_criminal = value
+            self.validate_answerYNType(self.has_criminal)    # validate type answerYNType
+        value = find_attr_value_('has_bankrupt', node)
+        if value is not None and 'has_bankrupt' not in already_processed:
+            already_processed.add('has_bankrupt')
+            self.has_bankrupt = value
+            self.validate_answerYNType(self.has_bankrupt)    # validate type answerYNType
+        value = find_attr_value_('has_civil_judc', node)
+        if value is not None and 'has_civil_judc' not in already_processed:
+            already_processed.add('has_civil_judc')
+            self.has_civil_judc = value
+            self.validate_answerYNType(self.has_civil_judc)    # validate type answerYNType
+        value = find_attr_value_('has_bond', node)
+        if value is not None and 'has_bond' not in already_processed:
+            already_processed.add('has_bond')
+            self.has_bond = value
+            self.validate_answerYNType(self.has_bond)    # validate type answerYNType
+        value = find_attr_value_('has_judgment', node)
+        if value is not None and 'has_judgment' not in already_processed:
+            already_processed.add('has_judgment')
+            self.has_judgment = value
+            self.validate_answerYNType(self.has_judgment)    # validate type answerYNType
+        value = find_attr_value_('has_invstgn', node)
+        if value is not None and 'has_invstgn' not in already_processed:
+            already_processed.add('has_invstgn')
+            self.has_invstgn = value
+            self.validate_answerYNType(self.has_invstgn)    # validate type answerYNType
+        value = find_attr_value_('has_cust_comp', node)
+        if value is not None and 'has_cust_comp' not in already_processed:
+            already_processed.add('has_cust_comp')
+            self.has_cust_comp = value
+            self.validate_answerYNType(self.has_cust_comp)    # validate type answerYNType
+        value = find_attr_value_('has_termination', node)
+        if value is not None and 'has_termination' not in already_processed:
+            already_processed.add('has_termination')
+            self.has_termination = value
+            self.validate_answerYNType(self.has_termination)    # validate type answerYNType
+    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False, parent=None):
         pass
 # end class DRPType
 
