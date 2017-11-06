@@ -111,7 +111,7 @@ class DRP(BaseModel):
 
 class Dsgntn(BaseModel):
     indvl = ForeignKeyField(Indvl, related_name='dsgntns')
-    dsgntn_nm = CharField(max_length=128)
+    dsgntn_nm = CharField(null=True, max_length=128)    # shouldn't be null!!
 
     class Meta:
         db_table = 'dsgntn'

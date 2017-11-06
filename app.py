@@ -1,8 +1,7 @@
-# Testing generateDS classes
-
 import IAPDclasses
+import sys
 from models import init_db
 
 init_db()
 
-rootObject = IAPDclasses.parse('resources/IA_Indvl_Feeds1.xml', silence=True)
+rootObject = IAPDclasses.parse(sys.argv[1], silence=True)
