@@ -781,7 +781,7 @@ class IAPDIndividualReportType(GeneratedsSuper):
     def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
-        db_obj = save_obj_to_db(self, IAPDReport)
+        db_obj = save_obj_to_db(self, IAPDIndividualReport)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_, parent=db_obj)
@@ -993,7 +993,7 @@ class IndvlType(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, already_processed)
         if db_obj:
             self.iapd_report_id = db_obj.id
-        db_obj = save_obj_to_db(self, Indvl)
+        db_obj = save_obj_to_db(self, Individual)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_, parent=db_obj)
@@ -1398,7 +1398,7 @@ class OthrNmType(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, already_processed)
         if db_obj:
             self.indvl_id = db_obj.id
-        db_obj = save_obj_to_db(self, OthrNm)
+        db_obj = save_obj_to_db(self, OtherName)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_, parent=db_obj)
@@ -1662,7 +1662,7 @@ class CrntEmpType(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, already_processed)
         if db_obj:
             self.indvl_id = db_obj.id
-        db_obj = save_obj_to_db(self, CrntEmp)
+        db_obj = save_obj_to_db(self, CurrentEmployment)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_, parent=db_obj)
@@ -1923,7 +1923,7 @@ class CrntRgstnType(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, already_processed)
         if db_obj:
             self.crnt_emp_id = db_obj.id
-        db_obj = save_obj_to_db(self, CrntRgstn)
+        db_obj = save_obj_to_db(self, CurrentRegistration)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_, parent=db_obj)
@@ -2147,9 +2147,9 @@ class BrnchOfLocType(GeneratedsSuper):
     def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
-        if isinstance(db_obj, CrntEmp):
+        if isinstance(db_obj, CurrentEmployment):
             self.crnt_emp_id = db_obj.id
-        db_obj = save_obj_to_db(self, BrnchOfLoc)
+        db_obj = save_obj_to_db(self, BranchOfficeLocation)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_, parent=db_obj)
@@ -2359,9 +2359,9 @@ class ExmType(GeneratedsSuper):
     def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
-        if isinstance(db_obj, Indvl):
+        if isinstance(db_obj, Individual):
             self.indvl_id = db_obj.id
-        db_obj = save_obj_to_db(self, Exm)
+        db_obj = save_obj_to_db(self, Exam)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_, parent=db_obj)
@@ -2527,9 +2527,9 @@ class DsgntnType(GeneratedsSuper):
     def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
-        if isinstance(db_obj, Indvl):
+        if isinstance(db_obj, Individual):
             self.indvl_id = db_obj.id
-        db_obj = save_obj_to_db(self, Dsgntn)
+        db_obj = save_obj_to_db(self, Designation)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_, parent=db_obj)
@@ -2727,9 +2727,9 @@ class PrevRgstnType(GeneratedsSuper):
     def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
-        if isinstance(db_obj, Indvl):
+        if isinstance(db_obj, Individual):
             self.indvl_id = db_obj.id
-        db_obj = save_obj_to_db(self, PrevRgstn)
+        db_obj = save_obj_to_db(self, PreviousRegistration)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_, parent=db_obj)
@@ -2925,9 +2925,9 @@ class PrevBrnchOfLocType(GeneratedsSuper):
     def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
-        if isinstance(db_obj, PrevRgstn):
+        if isinstance(db_obj, PreviousRegistration):
             self.prev_rgstn_id = db_obj.id
-        db_obj = save_obj_to_db(self, PrevBrnchOfLoc)
+        db_obj = save_obj_to_db(self, PreviousBranchOfficeLocation)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_, parent=db_obj)
@@ -3139,9 +3139,9 @@ class EmpHistType(GeneratedsSuper):
     def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
-        if isinstance(db_obj, Indvl):
+        if isinstance(db_obj, Individual):
             self.indvl_id = db_obj.id
-        db_obj = save_obj_to_db(self, EmpHist)
+        db_obj = save_obj_to_db(self, EmploymentHistory)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_, parent=db_obj)
@@ -3311,9 +3311,9 @@ class OthrBusType(GeneratedsSuper):
     def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
-        if isinstance(db_obj, Indvl):
+        if isinstance(db_obj, Individual):
             self.indvl_id = db_obj.id
-        db_obj = save_obj_to_db(self, OthrBus)
+        db_obj = save_obj_to_db(self, OtherBusiness)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_, parent=db_obj)
@@ -3531,7 +3531,7 @@ class DRPType(GeneratedsSuper):
     def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
-        if isinstance(db_obj, Indvl):
+        if isinstance(db_obj, Individual):
             self.indvl_id = db_obj.id
         db_obj = save_obj_to_db(self, DRP)
         for child in node:
