@@ -754,8 +754,8 @@ class IAPDIndividualReportType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -843,8 +843,8 @@ class IndvlsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -950,8 +950,8 @@ class IndvlType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -1048,11 +1048,11 @@ class InfoType(GeneratedsSuper):
     the individual’s composite in IAPD."""
     subclass = None
     superclass = None
-    def __init__(self, last_nm=None, first_nm=None, mid_nm=None, suf_nm=None, indvlPK=None, actvAGReg=None, link=None):
-        self.last_nm = _cast(None, last_nm)
-        self.first_nm = _cast(None, first_nm)
-        self.mid_nm = _cast(None, mid_nm)
-        self.suf_nm = _cast(None, suf_nm)
+    def __init__(self, lastNm=None, firstNm=None, midNm=None, sufNm=None, indvlPK=None, actvAGReg=None, link=None):
+        self.last_nm = _cast(None, lastNm)
+        self.first_nm = _cast(None, firstNm)
+        self.mid_nm = _cast(None, midNm)
+        self.suf_nm = _cast(None, sufNm)
         self.indvl_pk = _cast(None, indvlPK)
         self.actv_ag_reg = _cast(None, actvAGReg)
         self.link = _cast(None, link)
@@ -1133,8 +1133,8 @@ class InfoType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -1180,24 +1180,24 @@ class InfoType(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('last_nm', node)
-        if value is not None and 'last_nm' not in already_processed:
-            already_processed.add('last_nm')
+        value = find_attr_value_('lastNm', node)
+        if value is not None and 'lastNm' not in already_processed:
+            already_processed.add('lastNm')
             self.last_nm = value
             self.validate_Str25(self.last_nm)    # validate type Str25
-        value = find_attr_value_('first_nm', node)
-        if value is not None and 'first_nm' not in already_processed:
-            already_processed.add('first_nm')
+        value = find_attr_value_('firstNm', node)
+        if value is not None and 'firstNm' not in already_processed:
+            already_processed.add('firstNm')
             self.first_nm = value
             self.validate_Str25(self.first_nm)    # validate type Str25
-        value = find_attr_value_('mid_nm', node)
-        if value is not None and 'mid_nm' not in already_processed:
-            already_processed.add('mid_nm')
+        value = find_attr_value_('midNm', node)
+        if value is not None and 'midNm' not in already_processed:
+            already_processed.add('midNm')
             self.mid_nm = value
             self.validate_Str20(self.mid_nm)    # validate type Str20
-        value = find_attr_value_('suf_nm', node)
-        if value is not None and 'suf_nm' not in already_processed:
-            already_processed.add('suf_nm')
+        value = find_attr_value_('sufNm', node)
+        if value is not None and 'sufNm' not in already_processed:
+            already_processed.add('sufNm')
             self.suf_nm = value
             self.validate_Str5(self.suf_nm)    # validate type Str5
         value = find_attr_value_('indvlPK', node)
@@ -1267,8 +1267,8 @@ class OthrNmsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -1366,8 +1366,8 @@ class OthrNmType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -1404,22 +1404,22 @@ class OthrNmType(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('last_nm', node)
+        value = find_attr_value_('lastNm', node)
         if value is not None and 'last_nm' not in already_processed:
             already_processed.add('last_nm')
             self.last_nm = value
             self.validate_Str25(self.last_nm)    # validate type Str25
-        value = find_attr_value_('first_nm', node)
+        value = find_attr_value_('firstNm', node)
         if value is not None and 'first_nm' not in already_processed:
             already_processed.add('first_nm')
             self.first_nm = value
             self.validate_Str25(self.first_nm)    # validate type Str25
-        value = find_attr_value_('mid_nm', node)
+        value = find_attr_value_('midNm', node)
         if value is not None and 'mid_nm' not in already_processed:
             already_processed.add('mid_nm')
             self.mid_nm = value
             self.validate_Str20(self.mid_nm)    # validate type Str20
-        value = find_attr_value_('suf_nm', node)
+        value = find_attr_value_('sufNm', node)
         if value is not None and 'suf_nm' not in already_processed:
             already_processed.add('suf_nm')
             self.suf_nm = value
@@ -1470,8 +1470,8 @@ class CrntEmpsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -1610,8 +1610,8 @@ class CrntEmpType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -1668,12 +1668,12 @@ class CrntEmpType(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('org_nm', node)
+        value = find_attr_value_('orgNm', node)
         if value is not None and 'org_nm' not in already_processed:
             already_processed.add('org_nm')
             self.org_nm = value
             self.validate_Str64(self.org_nm)    # validate type Str64
-        value = find_attr_value_('org_pk', node)
+        value = find_attr_value_('orgPK', node)
         if value is not None and 'org_pk' not in already_processed:
             already_processed.add('org_pk')
             try:
@@ -1706,7 +1706,7 @@ class CrntEmpType(GeneratedsSuper):
             already_processed.add('cntry')
             self.cntry = value
             self.validate_Str50(self.cntry)    # validate type Str50
-        value = find_attr_value_('postl_cd', node)
+        value = find_attr_value_('postlCd', node)
         if value is not None and 'postl_cd' not in already_processed:
             already_processed.add('postl_cd')
             self.postl_cd = value
@@ -1764,8 +1764,8 @@ class CrntRgstnsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -1810,11 +1810,11 @@ class CrntRgstnType(GeneratedsSuper):
     a status change was posted to the system. (YYYY-MM-DD)"""
     subclass = None
     superclass = None
-    def __init__(self, reg_auth=None, reg_cat=None, st=None, st_dt=None):
-        self.reg_auth = _cast(None, reg_auth)
-        self.reg_cat = _cast(None, reg_cat)
+    def __init__(self, regAuth=None, regCat=None, st=None, stDt=None):
+        self.reg_auth = _cast(None, regAuth)
+        self.reg_cat = _cast(None, regCat)
         self.st = _cast(None, st)
-        self.st_dt = _cast(None, st_dt)
+        self.st_dt = _cast(None, stDt)
     def factory(*args_, **kwargs_):
         if CurrentSubclassModule_ is not None:
             subclass = getSubclassFromModule_(
@@ -1891,8 +1891,8 @@ class CrntRgstnType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -1929,12 +1929,12 @@ class CrntRgstnType(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('reg_auth', node)
-        if value is not None and 'reg_auth' not in already_processed:
-            already_processed.add('reg_auth')
+        value = find_attr_value_('regAuth', node)
+        if value is not None and 'regAuth' not in already_processed:
+            already_processed.add('regAuth')
             self.reg_auth = value
             self.validate_StateCdType(self.reg_auth)    # validate type StateCdType
-        value = find_attr_value_('reg_cat', node)
+        value = find_attr_value_('regCat', node)
         if value is not None and 'reg_cat' not in already_processed:
             already_processed.add('reg_cat')
             self.reg_cat = value
@@ -1944,7 +1944,7 @@ class CrntRgstnType(GeneratedsSuper):
             already_processed.add('st')
             self.st = value
             self.validate_registrationStatusCode(self.st)    # validate type registrationStatusCode
-        value = find_attr_value_('st_dt', node)
+        value = find_attr_value_('stDt', node)
         if value is not None and 'st_dt' not in already_processed:
             already_processed.add('st_dt')
             self.st_dt = value
@@ -1994,8 +1994,8 @@ class BrnchOfLocsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -2111,8 +2111,8 @@ class BrnchOfLocType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -2149,8 +2149,6 @@ class BrnchOfLocType(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, already_processed)
         if isinstance(db_obj, CrntEmp):
             self.crnt_emp_id = db_obj.id
-        elif isinstance(db_obj, PrevRgstn):
-            self.prev_rgstn_id = db_obj.id
         db_obj = save_obj_to_db(self, BrnchOfLoc)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
@@ -2182,7 +2180,7 @@ class BrnchOfLocType(GeneratedsSuper):
             already_processed.add('cntry')
             self.cntry = value
             self.validate_Str50(self.cntry)    # validate type Str50
-        value = find_attr_value_('postl_cd', node)
+        value = find_attr_value_('postlCd', node)
         if value is not None and 'postl_cd' not in already_processed:
             already_processed.add('postl_cd')
             self.postl_cd = value
@@ -2234,8 +2232,8 @@ class ExmsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -2334,8 +2332,8 @@ class ExmType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -2369,17 +2367,17 @@ class ExmType(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('exm_cd', node)
+        value = find_attr_value_('exmCd', node)
         if value is not None and 'exm_cd' not in already_processed:
             already_processed.add('exm_cd')
             self.exm_cd = value
             self.validate_examCodeType(self.exm_cd)    # validate type examCodeType
-        value = find_attr_value_('exm_nm', node)
+        value = find_attr_value_('exmNm', node)
         if value is not None and 'exm_nm' not in already_processed:
             already_processed.add('exm_nm')
             self.exm_nm = value
             self.validate_Str128(self.exm_nm)    # validate type Str128
-        value = find_attr_value_('exm_dt', node)
+        value = find_attr_value_('exmDt', node)
         if value is not None and 'exm_dt' not in already_processed:
             already_processed.add('exm_dt')
             self.exm_dt = value
@@ -2429,8 +2427,8 @@ class DsgntnsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -2508,8 +2506,8 @@ class DsgntnType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -2537,7 +2535,7 @@ class DsgntnType(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('dsgntn_nm', node)
+        value = find_attr_value_('dsgntnNm', node)
         if value is not None and 'dsgntn_nm' not in already_processed:
             already_processed.add('dsgntn_nm')
             self.dsgntn_nm = value
@@ -2588,8 +2586,8 @@ class PrevRgstnsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -2693,8 +2691,8 @@ class PrevRgstnType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -2731,20 +2729,18 @@ class PrevRgstnType(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, already_processed)
         if isinstance(db_obj, Indvl):
             self.indvl_id = db_obj.id
-        elif isinstance(db_obj, IAPDReport):
-            self.iapd_report_id = db_obj.id
         db_obj = save_obj_to_db(self, PrevRgstn)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('org_nm', node)
+        value = find_attr_value_('orgNm', node)
         if value is not None and 'org_nm' not in already_processed:
             already_processed.add('org_nm')
             self.org_nm = value
             self.validate_Str64(self.org_nm)    # validate type Str64
-        value = find_attr_value_('org_pk', node)
+        value = find_attr_value_('orgPK', node)
         if value is not None and 'org_pk' not in already_processed:
             already_processed.add('org_pk')
             try:
@@ -2752,11 +2748,11 @@ class PrevRgstnType(GeneratedsSuper):
             except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
             self.validate_Int10(self.org_pk)    # validate type Int10
-        value = find_attr_value_('reg_begin_dt', node)
+        value = find_attr_value_('regBeginDt', node)
         if value is not None and 'reg_begin_dt' not in already_processed:
             already_processed.add('reg_begin_dt')
             self.reg_begin_dt = value
-        value = find_attr_value_('reg_end_dt', node)
+        value = find_attr_value_('regEndDt', node)
         if value is not None and 'reg_end_dt' not in already_processed:
             already_processed.add('reg_end_dt')
             self.reg_end_dt = value
@@ -2809,8 +2805,8 @@ class PrevBrnchOfLocsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -2905,8 +2901,8 @@ class PrevBrnchOfLocType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -2929,9 +2925,7 @@ class PrevBrnchOfLocType(GeneratedsSuper):
     def build(self, node, db_obj=None):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
-        if isinstance(db_obj, CrntEmp):
-            self.crnt_emp_id = db_obj.id
-        elif isinstance(db_obj, PrevRgstn):
+        if isinstance(db_obj, PrevRgstn):
             self.prev_rgstn_id = db_obj.id
         db_obj = save_obj_to_db(self, PrevBrnchOfLoc)
         for child in node:
@@ -2995,8 +2989,8 @@ class EmpHistsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -3112,8 +3106,8 @@ class EmpHistType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -3153,17 +3147,17 @@ class EmpHistType(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('from_dt', node)
+        value = find_attr_value_('fromDt', node)
         if value is not None and 'from_dt' not in already_processed:
             already_processed.add('from_dt')
             self.from_dt = value
             self.validate_Str7(self.from_dt)    # validate type Str7
-        value = find_attr_value_('to_dt', node)
+        value = find_attr_value_('toDt', node)
         if value is not None and 'to_dt' not in already_processed:
             already_processed.add('to_dt')
             self.to_dt = value
             self.validate_Str7(self.to_dt)    # validate type Str7
-        value = find_attr_value_('org_nm', node)
+        value = find_attr_value_('orgNm', node)
         if value is not None and 'org_nm' not in already_processed:
             already_processed.add('org_nm')
             self.org_nm = value
@@ -3218,8 +3212,8 @@ class OthrBussType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -3296,8 +3290,8 @@ class OthrBusType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -3376,8 +3370,8 @@ class DRPsType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -3492,8 +3486,8 @@ class DRPType(GeneratedsSuper):
             eol_ = '\n'
         else:
             eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
+        
+            
         showIndent(outfile, level, pretty_print)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
@@ -3545,47 +3539,47 @@ class DRPType(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_, parent=db_obj)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('has_reg_action', node)
+        value = find_attr_value_('hasRegAction', node)
         if value is not None and 'has_reg_action' not in already_processed:
             already_processed.add('has_reg_action')
             self.has_reg_action = value
             self.validate_answerYNType(self.has_reg_action)    # validate type answerYNType
-        value = find_attr_value_('has_criminal', node)
+        value = find_attr_value_('hasCriminal', node)
         if value is not None and 'has_criminal' not in already_processed:
             already_processed.add('has_criminal')
             self.has_criminal = value
             self.validate_answerYNType(self.has_criminal)    # validate type answerYNType
-        value = find_attr_value_('has_bankrupt', node)
+        value = find_attr_value_('hasBankrupt', node)
         if value is not None and 'has_bankrupt' not in already_processed:
             already_processed.add('has_bankrupt')
             self.has_bankrupt = value
             self.validate_answerYNType(self.has_bankrupt)    # validate type answerYNType
-        value = find_attr_value_('has_civil_judc', node)
+        value = find_attr_value_('hasCivilJudc', node)
         if value is not None and 'has_civil_judc' not in already_processed:
             already_processed.add('has_civil_judc')
             self.has_civil_judc = value
             self.validate_answerYNType(self.has_civil_judc)    # validate type answerYNType
-        value = find_attr_value_('has_bond', node)
+        value = find_attr_value_('hasBond', node)
         if value is not None and 'has_bond' not in already_processed:
             already_processed.add('has_bond')
             self.has_bond = value
             self.validate_answerYNType(self.has_bond)    # validate type answerYNType
-        value = find_attr_value_('has_judgment', node)
+        value = find_attr_value_('hasJudgment', node)
         if value is not None and 'has_judgment' not in already_processed:
             already_processed.add('has_judgment')
             self.has_judgment = value
             self.validate_answerYNType(self.has_judgment)    # validate type answerYNType
-        value = find_attr_value_('has_invstgn', node)
+        value = find_attr_value_('hasInvstgn', node)
         if value is not None and 'has_invstgn' not in already_processed:
             already_processed.add('has_invstgn')
             self.has_invstgn = value
             self.validate_answerYNType(self.has_invstgn)    # validate type answerYNType
-        value = find_attr_value_('has_cust_comp', node)
+        value = find_attr_value_('hasCustComp', node)
         if value is not None and 'has_cust_comp' not in already_processed:
             already_processed.add('has_cust_comp')
             self.has_cust_comp = value
             self.validate_answerYNType(self.has_cust_comp)    # validate type answerYNType
-        value = find_attr_value_('has_termination', node)
+        value = find_attr_value_('hasTermination', node)
         if value is not None and 'has_termination' not in already_processed:
             already_processed.add('has_termination')
             self.has_termination = value

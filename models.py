@@ -2,8 +2,14 @@ from peewee import *
 from utils.codes import *
 
 
-# database = PostgresqlDatabase('ria', **{'user': 'postgres'})
-database = SqliteDatabase('ria')
+database = PostgresqlDatabase('ria', **{'user': 'postgres'})
+# database = SqliteDatabase('ria')
+
+
+def init_db():
+    database.create_tables([IAPDReport, Indvl, CrntEmp, PrevRgstn, BrnchOfLoc, CrntRgstn,
+                           DRP, Dsgntn, EmpHist, Exm, Info, OthrBus, OthrNm, PrevBrnchOfLoc], safe=True)
+
 
 answer_yes_no = {
     ("Y", "Y"),
@@ -18,7 +24,6 @@ class BaseModel(Model):
 
 class IAPDReport(BaseModel):
     gen_on = DateTimeField()
-    # indvl = ForeignKeyField()
 
     class Meta:
         db_table = 'iapdreport'
@@ -48,7 +53,6 @@ class CrntEmp(BaseModel):
 
 class PrevRgstn(BaseModel):
     indvl = ForeignKeyField(Indvl, related_name='prev_rgstns', null=True)
-    iapd_report = ForeignKeyField(IAPDReport, related_name='prev_rgstns', null=True)
     org_nm = CharField(null=True, max_length=64)    # shouldn't be null!!
     org_pk = IntegerField(null=True)    # shouldn't be null!!
     reg_begin_dt = DateTimeField(null=True)
@@ -60,7 +64,6 @@ class PrevRgstn(BaseModel):
 
 class BrnchOfLoc(BaseModel):
     crnt_emp = ForeignKeyField(CrntEmp, related_name='brnch_of_locs', null=True)
-    prev_rgstn = ForeignKeyField(PrevRgstn, related_name='brnch_of_locs', null=True)
     city = CharField(null=True, max_length=50)
     cntry = CharField(null=True, max_length=50)
     postl_cd = CharField(null=True, max_length=11)
@@ -73,7 +76,6 @@ class BrnchOfLoc(BaseModel):
 
 
 class PrevBrnchOfLoc(BaseModel):
-    crnt_emp = ForeignKeyField(CrntEmp, related_name='prev_brnch_of_locs', null=True)
     prev_rgstn = ForeignKeyField(PrevRgstn, related_name='prev_brnch_of_locs', null=True)
     city = CharField(null=True, max_length=50)
     state = CharField(null=True, choices=state_code)
@@ -170,8 +172,3 @@ class OthrNm(BaseModel):
 
     class Meta:
         db_table = 'othrnm'
-
-
-def init_db():
-    database.create_tables([IAPDReport, Indvl, CrntEmp, PrevRgstn, BrnchOfLoc, CrntRgstn,
-                           DRP, Dsgntn, EmpHist, Exm, Info, OthrBus, OthrNm, PrevBrnchOfLoc])
